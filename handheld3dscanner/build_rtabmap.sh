@@ -1,0 +1,95 @@
+#!/bin/bash -e
+
+# https://github.com/introlab/rtabmap/wiki/Installation#raspberrypi
+
+hh3s=~/handheld3dscanner
+export hh3s
+pkgname="rtabmap"
+gitname="rtabmap"
+#gittag="0.18.1"
+gittag="0.19.3-kinetic"
+
+mkdir -p ${hh3s} && cd ${hh3s}
+
+if [ ! -f ${hh3s}/${gitname}/build/build_${pkgname}.started ]; then
+
+./aptget_install_these.sh
+./install_vtk6.sh
+
+if [ ! -f ${hh3s}/build_libpcl17.done ]; then
+#	./build_libpcl17.sh
+	echo "ERROR: Please build libpcl v1.7" >&2
+	exit 1
+fi
+cd ${hh3s}
+
+if [ ! -f ${hh3s}/build_opencv3.done ]; then
+#	./build_opencv.sh
+	echo "ERROR: Please build opencv, or install opencv yourself and disable this message in the script" >&2
+	exit 1
+fi
+cd ${hh3s}
+
+if [ ! -f ${hh3s}/build_gtsam.done ]; then
+#	./build_gtsam.sh
+	echo "ERROR: Please build gtsam" >&2
+	exit 1
+fi
+cd ${hh3s}
+
+if [ ! -f ${hh3s}/build_g2o.done ]; then
+#	./build_g2o.sh
+	echo "ERROR: Please build g2o" >&2
+	exit 1
+fi
+cd ${hh3s}
+
+if [ -d ${hh3s}/${gitname} ]; then
+	cd ${gitname}
+	git reset --hard HEAD
+else
+	git clone https://github.com/introlab/rtabmap.git
+	cd ${gitname}
+fi
+
+git checkout -f ${gittag}
+git apply ${hh3s}/patch_${pkgname}_${gittag}.patch
+
+# https://github.com/RainerKuemmerle/g2o/issues/53#issuecomment-455067781
+sudo apt-get install -y libsuitesparse-dev
+sudo cp ${hh3s}/FindCSparse.cmake /usr/share/cmake-*/Modules/
+
+mkdir -p build && cd build
+sudo rm -rf ./*
+cmake -DCMAKE_BUILD_TYPE=release -DBUILD_WITH_MARCH_NATIVE=OFF .. 2>&1 | tee cmake_outputlog.txt
+[ ${PIPESTATUS[0]} -ne 0 ] && exit 1
+restarted=0
+
+else
+cd ${hh3s}/${gitname}/build
+restarted=1
+fi
+
+n=0
+until [ $n -ge 10 ]
+do
+	touch ${hh3s}/${gitname}/build/build_${pkgname}.started
+	echo "make attempt on $(date)" | tee -a make_outputlog.txt
+	make -j4 2>&1 | tee -a make_outputlog.txt
+	if [ ${PIPESTATUS[0]} -eq 0 ]; then
+		break
+	else
+		if [ $restarted -eq 0 ]; then
+			echo "removing possibly corrupted object files"
+			find . -type f -size 0 -name *.cpp.o
+			find . -type f -size 0 -name *.c.o
+		fi
+	fi
+	n=$[$n+1]
+done
+[ ${PIPESTATUS[0]} -ne 0 ] && exit 1
+
+sudo make install
+sudo ldconfig
+
+touch ${hh3s}/build_${pkgname}.done

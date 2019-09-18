@@ -1,0 +1,23 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3a948c9e..3db4ba8b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -92,6 +92,9 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
+   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+ 
++SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")
++SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
++
+ if(MSVC)
+   if(MSVC_VERSION GREATER 1500 AND ${CMAKE_VERSION} VERSION_GREATER "2.8.6")
+     include(ProcessorCount)
+@@ -216,6 +219,8 @@ endif()
+ 
+ FIND_PACKAGE(ZLIB REQUIRED QUIET)
+ 
++FIND_PACKAGE(CSparse REQUIRED)
++
+ FIND_PACKAGE(Sqlite3 QUIET)
+ IF(Sqlite3_FOUND)
+    MESSAGE(STATUS "Found Sqlite3: ${Sqlite3_INCLUDE_DIRS} ${Sqlite3_LIBRARIES}")

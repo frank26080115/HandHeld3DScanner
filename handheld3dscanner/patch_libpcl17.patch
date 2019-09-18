@@ -1,0 +1,75 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f0a560036..c12df6c45 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -166,6 +166,9 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+   SET(CLANG_LIBRARIES "stdc++")
+ endif()
+ 
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
++
+ include("${PCL_SOURCE_DIR}/cmake/pcl_utils.cmake")
+ set(PCL_VERSION 1.7.2 CACHE STRING "PCL version")
+ DISSECT_VERSION()
+diff --git a/outofcore/include/pcl/outofcore/impl/octree_base_node.hpp b/outofcore/include/pcl/outofcore/impl/octree_base_node.hpp
+index dacaeb1b4..b70d4943e 100644
+--- a/outofcore/include/pcl/outofcore/impl/octree_base_node.hpp
++++ b/outofcore/include/pcl/outofcore/impl/octree_base_node.hpp
+@@ -541,7 +541,7 @@ namespace pcl
+           if ( indices[i].empty () )
+             continue;
+ 
+-          if ( children_[i] == false )
++          if ( children_[i] == NULL )
+           {
+             createChild (i);
+           }
+@@ -796,7 +796,7 @@ namespace pcl
+         if(indices[i].empty ())
+           continue;
+ 
+-        if( children_[i] == false )
++        if( children_[i] == NULL )
+         {
+           assert (i < 8);
+           createChild (i);
+diff --git a/registration/include/pcl/registration/correspondence_estimation_backprojection.h b/registration/include/pcl/registration/correspondence_estimation_backprojection.h
+index 9be00439c..0a96c58f5 100644
+--- a/registration/include/pcl/registration/correspondence_estimation_backprojection.h
++++ b/registration/include/pcl/registration/correspondence_estimation_backprojection.h
+@@ -184,7 +184,7 @@ namespace pcl
+           * cloud for computing correspondences. By default we use k = 10 nearest 
+           * neighbors.
+           */
+-        inline void
++        inline unsigned int
+         getKSearch () const { return (k_); }
+         
+         /** \brief Clone and cast to CorrespondenceEstimationBase */
+diff --git a/registration/include/pcl/registration/correspondence_estimation_normal_shooting.h b/registration/include/pcl/registration/correspondence_estimation_normal_shooting.h
+index 84e7b32ac..4c5e0abc7 100644
+--- a/registration/include/pcl/registration/correspondence_estimation_normal_shooting.h
++++ b/registration/include/pcl/registration/correspondence_estimation_normal_shooting.h
+@@ -180,7 +180,7 @@ namespace pcl
+           * cloud for computing correspondences. By default we use k = 10 nearest 
+           * neighbors.
+           */
+-        inline void
++        inline unsigned int
+         getKSearch () const { return (k_); }
+ 
+         /** \brief Clone and cast to CorrespondenceEstimationBase */
+diff --git a/segmentation/include/pcl/segmentation/plane_coefficient_comparator.h b/segmentation/include/pcl/segmentation/plane_coefficient_comparator.h
+index 9c9481372..81985046b 100644
+--- a/segmentation/include/pcl/segmentation/plane_coefficient_comparator.h
++++ b/segmentation/include/pcl/segmentation/plane_coefficient_comparator.h
+@@ -141,7 +141,7 @@ namespace pcl
+       const std::vector<float>&
+       getPlaneCoeffD () const
+       {
+-        return (plane_coeff_d_);
++        return ((const std::vector<float>&)plane_coeff_d_);
+       }
+ 
+       /** \brief Set the tolerance in radians for difference in normal direction between neighboring points, to be considered part of the same plane.

@@ -1,0 +1,5 @@
+./**/
+*.done
+*.tgz
+*.tar.gz
+*.tar.bz2
