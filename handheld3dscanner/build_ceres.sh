@@ -1,12 +1,14 @@
 #!/bin/bash -e
 
-# https://github.com/introlab/rtabmap/wiki/Installation#raspberrypi
+# https://docs.opencv.org/master/db/db8/tutorial_sfm_installation.html
+
+# note: this script is kinda useless since libceres-dev is available through apt-get already
 
 BASEDIR=$(cd $(dirname "$0"); pwd)
 
-pkgname="g2o"
-gitname="g2o"
-gittag="e7b5b7a1143bcbb6d57faab4bff8b2ab3ccd17a6"
+pkgname="ceres-solver"
+gitname="ceres-solver"
+gittag="1.14.0"
 
 cd ${BASEDIR}
 
@@ -16,22 +18,15 @@ if [ -d ${BASEDIR}/${gitname} ]; then
 	cd ${gitname}
 	git reset --hard HEAD
 else
-	git clone https://github.com/RainerKuemmerle/g2o.git
+	git clone https://ceres-solver.googlesource.com/ceres-solver
 	cd ${gitname}
 fi
 
 git checkout -f ${gittag}
 
-# https://github.com/RainerKuemmerle/g2o/issues/53#issuecomment-455067781
-sudo apt-get install -y libsuitesparse-dev
-sudo cp ${BASEDIR}/FindCSparse.cmake /usr/share/cmake-*/Modules/
-
-# it is of utmost importance that -march=native is on for the g2o build
-# in fact, all dependancies of rtabmap should be built with -march=native
-
 mkdir -p build && cd build
 sudo rm -rf ./*
-cmake -DBUILD_WITH_MARCH_NATIVE=ON -DG2O_BUILD_APPS=OFF -DG2O_BUILD_EXAMPLES=OFF -DG2O_USE_OPENGL=OFF .. 2>&1 | tee cmake_outputlog.txt
+cmake -DCMAKE_BUILD_TYPE=Release -DCXX11=ON  .. 2>&1 | tee cmake_outputlog.txt
 [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
 restarted=0
 

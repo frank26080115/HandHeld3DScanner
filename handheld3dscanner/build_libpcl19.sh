@@ -2,9 +2,9 @@
 
 BASEDIR=$(cd $(dirname "$0"); pwd)
 
-pkgname="libpcl17"
+pkgname="libpcl19"
 gitname="pcl"
-gittag="pcl-1.7.2"
+gittag="pcl-1.9.1"
 
 cd ${BASEDIR}
 
@@ -13,7 +13,7 @@ if [ ! -f ${BASEDIR}/${gitname}/build/build_${pkgname}.started ]; then
 # something uninstalled libflann, which is still required here
 sudo apt-get install -y libflann-dev
 
-# we want v1.7 so make sure we don't have 1.9 installed
+# we want to build manually so make sure we don't have it already installed
 sudo apt-get remove -y libpcl*9*
 
 if [ -d ${BASEDIR}/${gitname} ]; then

@@ -1,0 +1,4 @@
+885c885
+<     char* str = PyString_AsString(obj);
+---
+>     const char* str = PyString_AsString(obj);

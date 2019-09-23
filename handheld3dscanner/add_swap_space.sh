@@ -4,9 +4,6 @@
 # the Raspberry Pi is fairly limited on RAM, especially if we want to build on all 4 cores
 # so we enable a large amount of swap memory, which means using flash memory as RAM
 
-hh3s=~/handheld3dscanner
-export hh3s
-
 check=$(free -m | grep 'Swap' | awk '{print $2}')
 if [ $check -ge 1023 ] ; then
 	echo "swap space already $check, skipping"

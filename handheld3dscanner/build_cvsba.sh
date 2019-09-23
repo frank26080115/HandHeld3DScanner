@@ -3,25 +3,15 @@
 # https://github.com/introlab/rtabmap/wiki/Installation#raspberrypi
 # http://www.uco.es/investiga/grupos/ava/node/39
 
-hh3s=~/handheld3dscanner
-export hh3s
+BASEDIR=$(cd $(dirname "$0"); pwd)
+
 pkgname="cvsba"
 dirname="cvsba-1.0.0"
 tarname="cvsba-1.0.0.tgz"
 
-mkdir -p ${hh3s} && cd ${hh3s}
+cd ${BASEDIR}
 
-if [ ! -f ${hh3s}/${gitname}/build/build_${pkgname}.started ]; then
-
-./aptget_install_these.sh
-./install_vtk6.sh
-
-if [ ! -f ${hh3s}/build_opencv3.done ]; then
-#	./build_opencv3.sh
-	echo "ERROR: cvsba requires opencv, please install it or disable this error message in the script" >&2
-	exit 1
-fi
-cd ${hh3s}
+if [ ! -f ${BASEDIR}/${gitname}/build/Makefile ]; then
 
 if [ ! -f ${tarname} ] ; then
 	rm -f ${tarname}
@@ -37,19 +27,18 @@ fi
 tar -zxvf ${tarname} ${dirname}
 mkdir -p ${dirname}/build
 cd ${dirname}/build
-cmake .. 2>&1 | tee cmake_outputlog.txt
+cmake -DCMAKE_CXX_FLAGS=-march=native .. 2>&1 | tee cmake_outputlog.txt
 [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
 restarted=0
 
 else
-cd ${hh3s}/${dirname}/build
+cd ${BASEDIR}/${dirname}/build
 restarted=1
 fi
 
 n=0
 until [ $n -ge 10 ]
 do
-	touch ${hh3s}/${dirname}/build/build_${pkgname}.started
 	echo "make attempt on $(date)" | tee -a make_outputlog.txt
 	make -j4 2>&1 | tee -a make_outputlog.txt
 	if [ ${PIPESTATUS[0]} -eq 0 ]; then
@@ -66,9 +55,10 @@ done
 [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
 
 sudo make install
-sudo ldconfig
 
 sudo mkdir /usr/local/lib/cmake/cvsba
 sudo mv /usr/local/lib/cmake/Findcvsba.cmake /usr/local/lib/cmake/cvsba/cvsbaConfig.cmake
 
-touch ${hh3s}/build_${pkgname}.done
+sudo ldconfig
+
+touch ${BASEDIR}/build_${pkgname}.done

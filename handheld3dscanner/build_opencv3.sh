@@ -1,23 +1,23 @@
 #!/bin/bash -e
 
-hh3s=~/handheld3dscanner
-export hh3s
+BASEDIR=$(cd $(dirname "$0"); pwd)
+
 pkgname="opencv3"
 gitname="opencv"
 gittag="3.4.7"
 
-mkdir -p ${hh3s} && cd ${hh3s}
+# note: Raspbian repo has 3.2 available through apt-get
 
-if [ ! -f ${hh3s}/${gitname}/build/build_${pkgname}.started ]; then
+cd ${BASEDIR}
 
-./aptget_install_these.sh
+if [ ! -f ${BASEDIR}/${gitname}/build/Makefile ]; then
 
-if [ -d ${hh3s}/${gitname} ]; then
-	cd ${gitname}
+if [ -d ${BASEDIR}/${gitname} ]; then
+	cd ${BASEDIR}/${gitname}
 	git reset --hard HEAD
 else
 	git clone https://github.com/opencv/opencv.git
-	cd ${gitname}
+	cd ${BASEDIR}/${gitname}
 fi
 
 git checkout -f ${gittag}
@@ -32,25 +32,28 @@ else
 fi
 
 git checkout -f ${gittag}
-cd ${hh3s}/${gitname}
+cd ${BASEDIR}/${gitname}
 
-git apply ${hh3s}/patch_${pkgname}.patch
-# the patch specifically has a fix for this problem https://github.com/opencv/opencv/issues/11486
+git apply ${BASEDIR}/patch_${pkgname}.patch
 
 mkdir -p build && cd build
 sudo rm -rf ./*
 
+# -std=c++11
+
 cmake -D CMAKE_BUILD_TYPE=Release                             \
+      -D CMAKE_CXX_FLAGS="-march=native -latomic"             \
       -D CMAKE_INSTALL_PREFIX=/usr/local                      \
       -D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib/modules  \
-      -D ENABLE_CXX11=ON                                      \
+      -D ENABLE_CXX11=OFF                                     \
       -D OPENCV_ENABLE_NONFREE=ON                             \
       -D ENABLE_PRECOMPILED_HEADERS=OFF                       \
+      -D BUILD_opencv_dnn=OFF                                 \
       -D BUILD_PYTHON_SUPPORT=ON                              \
       -D WITH_XINE=ON                                         \
       -D WITH_OPENGL=ON                                       \
       -D WITH_TBB=ON                                          \
-      -D BUILD_EXAMPLES=ON                                    \
+      -D BUILD_EXAMPLES=OFF                                   \
       -D BUILD_NEW_PYTHON_SUPPORT=ON                          \
       -D WITH_V4L=ON                                          \
       ..                                                      \
@@ -60,14 +63,13 @@ cmake -D CMAKE_BUILD_TYPE=Release                             \
 restarted=0
 
 else
-cd ${hh3s}/${gitname}/build
+cd ${BASEDIR}/${gitname}/build
 restarted=1
 fi
 
 n=0
 until [ $n -ge 10 ]
 do
-	touch ${hh3s}/${gitname}/build/build_${pkgname}.started
 	echo "make attempt on $(date)" | tee -a make_outputlog.txt
 	make -j4 2>&1 | tee -a make_outputlog.txt
 	if [ ${PIPESTATUS[0]} -eq 0 ]; then
@@ -84,5 +86,6 @@ done
 [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
 
 sudo make install
+sudo ldconfig
 
-touch ${hh3s}/build_${pkgname}.done
+touch ${BASEDIR}/build_${pkgname}.done

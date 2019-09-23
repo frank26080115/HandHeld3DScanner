@@ -1,0 +1,6 @@
+16a17
+> set(BUILD_opencv_dnn OFF)
+188c189
+< OCV_OPTION(OPENCV_ENABLE_NONFREE "Enable non-free algorithms" OFF)
+---
+> OCV_OPTION(OPENCV_ENABLE_NONFREE "Enable non-free algorithms" ON)

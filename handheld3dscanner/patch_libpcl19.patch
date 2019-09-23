@@ -1,0 +1,26 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0b4c1a33d..12f5c4c97 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -193,6 +193,8 @@ if(CMAKE_COMPILER_IS_CLANG)
+   SET(CLANG_LIBRARIES "stdc++")
+ endif()
+ 
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")
++
+ include("${PCL_SOURCE_DIR}/cmake/pcl_utils.cmake")
+ DISSECT_VERSION()
+ GET_OS_INFO()
+diff --git a/segmentation/include/pcl/segmentation/plane_coefficient_comparator.h b/segmentation/include/pcl/segmentation/plane_coefficient_comparator.h
+index a21725a40..f18dd87d5 100644
+--- a/segmentation/include/pcl/segmentation/plane_coefficient_comparator.h
++++ b/segmentation/include/pcl/segmentation/plane_coefficient_comparator.h
+@@ -141,7 +141,7 @@ namespace pcl
+       const std::vector<float>&
+       getPlaneCoeffD () const
+       {
+-        return (*plane_coeff_d_);
++        return (const std::vector<float>&)(*plane_coeff_d_);
+       }
+ 
+       /** \brief Set the tolerance in radians for difference in normal direction between neighboring points, to be considered part of the same plane.

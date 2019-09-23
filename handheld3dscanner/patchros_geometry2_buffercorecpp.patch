@@ -1,0 +1,9 @@
+41a42,49
+> #ifndef logError // added by frank26080115
+> #define logError CONSOLE_BRIDGE_logError
+> #endif
+> 
+> #ifndef logWarn // added by frank26080115
+> #define logWarn CONSOLE_BRIDGE_logWarn
+> #endif
+> 

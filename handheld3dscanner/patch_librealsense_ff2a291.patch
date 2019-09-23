@@ -29,3 +29,40 @@ index 03af41c25..d343561b0 100755
 +sudo udevadm control --reload-rules && sudo udevadm trigger
  
  echo "udev-rules successfully installed"
+diff --git a/src/libusb/messenger-libusb.cpp b/src/libusb/messenger-libusb.cpp
+index 0ef9e0bd0..701270485 100644
+--- a/src/libusb/messenger-libusb.cpp
++++ b/src/libusb/messenger-libusb.cpp
+@@ -88,6 +88,20 @@ namespace librealsense
+             auto h = dh.get_handle();
+             int actual_length = 0;
+             auto sts = libusb_bulk_transfer(h, endpoint->get_address(), buffer, length, &actual_length, timeout_ms);
++            if(sts < 0 && intf_claimed == 0)
++            {
++                auto intf_sts = libusb_claim_interface(h, endpoint->get_interface_number());
++                if (intf_sts < 0)
++                {
++                    intf_claimed = 1;
++                    sts = libusb_bulk_transfer(h, endpoint->get_address(), buffer, length, &actual_length, timeout_ms);
++                }
++                else
++                {
++                    std::string strerr = strerror(errno);
++                    LOG_WARNING("libusb_claim_interface returned error, interface: " << (int)endpoint->get_interface_number() << ", error: " << strerr << ", number: " << (int)errno);
++                }
++            }
+             if(sts < 0)
+             {
+                 std::string strerr = strerror(errno);
+diff --git a/src/libusb/messenger-libusb.h b/src/libusb/messenger-libusb.h
+index a8afb84e4..0a6455171 100644
+--- a/src/libusb/messenger-libusb.h
++++ b/src/libusb/messenger-libusb.h
+@@ -35,6 +35,7 @@ namespace librealsense
+         private:
+             const std::shared_ptr<usb_device_libusb> _device;
+             std::shared_ptr<usb_interface_libusb> get_interface(int number);
++            char intf_claimed = 0;
+         };
+     }
+ }

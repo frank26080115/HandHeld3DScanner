@@ -1,19 +1,18 @@
 #!/bin/bash -e
 
-hh3s=~/handheld3dscanner
-export hh3s
+BASEDIR=$(cd $(dirname "$0"); pwd)
+
 pkgname="librealsense"
 gitname="librealsense"
 #gittag="v2.28.0"
 gittag="ff2a291" # master as of Sept-17-2019
 
-mkdir -p ${hh3s} && cd ${hh3s}
+cd ${BASEDIR}
 
-if [ ! -f ${hh3s}/${gitname}/build/build_${pkgname}.started ]; then
+if [ ! -f ${BASEDIR}/${gitname}/build/Makefile ]; then
 
 #./aptget_install_these.sh
 # we need a more minimal install first
-sudo apt-get update
 sudo apt-get install -y build-essential cmake make git pkg-config libusb-1.0-0 libusb-1.0-0-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev xorg-dev libgtk-3-dev qtbase5-dev python2.7-dev python3-dev
 ./set_gcc_version.sh
 
@@ -26,9 +25,24 @@ else
 fi
 git checkout -f ${gittag}
 
-git apply ${hh3s}/patch_${pkgname}_${gittag}.patch
+git apply ${BASEDIR}/patch_${pkgname}_${gittag}.patch
 
-sudo ./scripts/setup_udev_rules.sh
+
+if [ -f /etc/udev/rules.d/99-realsense-libusb.rules ]; then
+	echo "The udev rules file have already been copied."
+	read -p "Run setup_udev_rules again? (y/n) " -n 1 -r
+	echo    # move to a new line
+	if [[ $REPLY =~ ^[Yy]$ ]]
+	then
+		sudo ./scripts/setup_udev_rules.sh
+	fi
+else
+	# udev rules needs to be copied and applied for librealsense to work
+	# only needs to be done once
+	sudo ./scripts/setup_udev_rules.sh
+fi
+
+# FORCE_LIBUVC=true is required for Raspbian right now, to avoid having to perform any kernel patches
 
 mkdir -p build && cd build
 sudo rm -rf ./*
@@ -37,7 +51,7 @@ cmake -DCMAKE_BUILD_TYPE=release -DBUILD_EXAMPLES=true -DFORCE_LIBUVC=true .. 2>
 restarted=0
 
 else
-cd ${hh3s}/${gitname}/build
+cd ${BASEDIR}/${gitname}/build
 restarted=1
 fi
 
@@ -46,7 +60,6 @@ fi
 n=0
 until [ $n -ge 10 ]
 do
-	touch ${hh3s}/${gitname}/build/build_${pkgname}.started
 	echo "make attempt on $(date)" | tee -a make_outputlog.txt
 	make -j4 2>&1 | tee -a make_outputlog.txt
 	if [ ${PIPESTATUS[0]} -eq 0 ]; then
@@ -65,4 +78,4 @@ done
 sudo make install
 sudo ldconfig
 
-touch ${hh3s}/build_${pkgname}.done
+touch ${BASEDIR}/build_${pkgname}.done
