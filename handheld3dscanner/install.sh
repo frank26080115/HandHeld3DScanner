@@ -20,5 +20,6 @@ sudo chmod +x *.sh
 ./source_ros.sh
 [ ! -f ${BASEDIR}/build_ros_rtabmap.done  ] && ./build_ros_rtabmap.sh
 ./install_rtabmap_icon.sh
+./install_off_icon.sh
 
 echo "this installation script has finished"
