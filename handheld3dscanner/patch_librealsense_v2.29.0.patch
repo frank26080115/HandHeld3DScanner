@@ -1,28 +1,39 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c560e367f..bc2a76397 100644
+index c560e367f..e11d737ef 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -25,6 +25,8 @@ include(CMake/global_config.cmake)
- 
- config_cxx_flags()
+@@ -37,6 +37,8 @@ os_set_flags()
+ # macro definition located at "CMake/global_config.cmake"
+ global_set_flags()
  
 +set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")
 +
- # include os specific macros
- # macro definition located at "CMake/global_config.cmake"
- include(CMake/include_os.cmake)
+ if(BUILD_SHARED_LIBS)
+     add_library(${LRS_TARGET} SHARED "")
+ else()
 diff --git a/scripts/setup_udev_rules.sh b/scripts/setup_udev_rules.sh
-index 03af41c25..d343561b0 100755
+index 03af41c25..f15729da4 100755
 --- a/scripts/setup_udev_rules.sh
 +++ b/scripts/setup_udev_rules.sh
-@@ -10,11 +10,11 @@ exec 2>&3
- if [ $con_dev -ne 0 ];
- then
- 	echo -e "\e[32m"
+@@ -7,14 +7,18 @@ exec 2> /dev/null
+ con_dev=$(ls /dev/video* | wc -l)
+ exec 2>&3
+ 
+-if [ $con_dev -ne 0 ];
+-then
+-	echo -e "\e[32m"
 -	read -p "Remove all RealSense cameras attached. Hit any key when ready"
-+	read -p "Remove all RealSense cameras attached. Hit enter key when ready"
- 	echo -e "\e[0m"
+-	echo -e "\e[0m"
++if [ $con_dev -ne 0 ]; then
++	while [ ! -z "$(lsusb | grep -E '(8086:0abf)|(8086:0acb)|(8086:0ad0)|(8086:04b4)|(8086:0ad1)|(8086:0ad2)|(8086:0ad3)|(8086:0ad4)|(8086:0ad5)|(8086:0ad6)|(8086:0af2)|(8086:0af6)|(8086:0afe)|(8086:0aff)|(8086:0b00)|(8086:0b01)|(8086:0b03)|(8086:0b07)|(8086:0b0c)|(8086:0b0d)|(8086:0b3a)|(8086:0b3d)|(8086:0b48)|(8086:0b49)|(8086:0b4b)|(8086:0b4d)|(8086:0ab3)|(8086:0adb)|(8086:0b55)|(8087:0af3)|(8087:0b37)|(03e7:2150)')" ] ;
++	do
++		echo -e "\e[32m"
++		read -p "Remove all RealSense cameras attached. Hit ENTER key when ready"
++		echo -e "\e[0m"
++	done
  fi
++echo poop
++exit 1
  
  sudo cp config/99-realsense-libusb.rules /etc/udev/rules.d/
 -sudo udevadm control --reload-rules && udevadm trigger
@@ -30,7 +41,7 @@ index 03af41c25..d343561b0 100755
  
  echo "udev-rules successfully installed"
 diff --git a/src/libusb/messenger-libusb.cpp b/src/libusb/messenger-libusb.cpp
-index 0ef9e0bd0..701270485 100644
+index 0ef9e0bd0..24f25fe85 100644
 --- a/src/libusb/messenger-libusb.cpp
 +++ b/src/libusb/messenger-libusb.cpp
 @@ -88,6 +88,20 @@ namespace librealsense
@@ -48,7 +59,7 @@ index 0ef9e0bd0..701270485 100644
 +                else
 +                {
 +                    std::string strerr = strerror(errno);
-+                    LOG_WARNING("libusb_claim_interface returned error, interface: " << (int)endpoint->get_interface_number() << ", error: " << strerr << ", number: " << (int)errno);
++                    LOG_WARNING("libusb_claim_interface returned error [sts " << (int)intf_sts << "], interface: " << (int)endpoint->get_interface_number() << ", error: " << strerr << ", errno: " << (int)errno);
 +                }
 +            }
              if(sts < 0)
@@ -66,3 +77,16 @@ index a8afb84e4..0a6455171 100644
          };
      }
  }
+diff --git a/src/sensor.cpp b/src/sensor.cpp
+index 408afcd3d..b12998c54 100644
+--- a/src/sensor.cpp
++++ b/src/sensor.cpp
+@@ -531,7 +531,7 @@ namespace librealsense
+                     }
+ 
+                     // Unpack the frame
+-                    if (requires_processing && (dest.size() > 0))
++                    if (requires_processing && (dest.size() > 0) && f.frame_size >= (mode.profile.width * mode.profile.height))
+                     {
+                         unpacker.unpack(dest.data(), reinterpret_cast<const byte *>(f.pixels), mode.profile.width, mode.profile.height, f.frame_size);
+                     }

@@ -4,8 +4,8 @@ BASEDIR=$(cd $(dirname "$0"); pwd)
 
 pkgname="librealsense"
 gitname="librealsense"
-#gittag="v2.28.0"
-gittag="ff2a291" # master as of Sept-17-2019
+gittag="v2.29.0"
+#gittag="ff2a291" # master as of Sept-17-2019
 
 cd ${BASEDIR}
 
@@ -14,7 +14,6 @@ if [ ! -f ${BASEDIR}/${gitname}/build/Makefile ]; then
 #./aptget_install_these.sh
 # we need a more minimal install first
 sudo apt-get install -y build-essential cmake make git pkg-config libusb-1.0-0 libusb-1.0-0-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev xorg-dev libgtk-3-dev qtbase5-dev python2.7-dev python3-dev
-./set_gcc_version.sh
 
 if [ -d ./${gitname} ]; then
 	cd ${gitname}
@@ -29,6 +28,7 @@ git apply ${BASEDIR}/patch_${pkgname}_${gittag}.patch
 
 
 if [ -f /etc/udev/rules.d/99-realsense-libusb.rules ]; then
+	echo -e "\e[32m"
 	echo "The udev rules file have already been copied."
 	read -p "Run setup_udev_rules again? (y/n) " -n 1 -r
 	echo    # move to a new line
@@ -36,6 +36,7 @@ if [ -f /etc/udev/rules.d/99-realsense-libusb.rules ]; then
 	then
 		sudo ./scripts/setup_udev_rules.sh
 	fi
+	echo -e "\e[0m"
 else
 	# udev rules needs to be copied and applied for librealsense to work
 	# only needs to be done once
@@ -46,7 +47,7 @@ fi
 
 mkdir -p build && cd build
 sudo rm -rf ./*
-cmake -DCMAKE_BUILD_TYPE=release -DBUILD_EXAMPLES=true -DFORCE_LIBUVC=true .. 2>&1 | tee cmake_outputlog.txt
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=true -DFORCE_LIBUVC=true .. 2>&1 | tee cmake_outputlog.txt
 [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
 restarted=0
 

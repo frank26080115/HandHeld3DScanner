@@ -32,8 +32,7 @@ fi
 fi
 
 cd ${BASEDIR}/${tarname}
-sudo ./b2 install
-sudo ldconfig
+./b2
 
 # installing libboost manually this way will overwrite other versions previously installed through apt-get
 

@@ -1,0 +1,9 @@
+108,109c108,112
+< #include <boost/tr1/unordered_set.hpp>
+< #include <boost/tr1/unordered_map.hpp>
+---
+> //#include <boost/tr1/unordered_set.hpp>
+> #include <boost/unordered_set.hpp>
+> //#include <boost/tr1/unordered_map.hpp>
+> #include <boost/unordered_map.hpp>
+> // frank26080115: edited these includes to be compatible with latest libboost
