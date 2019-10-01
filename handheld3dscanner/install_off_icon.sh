@@ -2,12 +2,8 @@
 
 BASEDIR=$(cd $(dirname "$0"); pwd)
 
-source /opt/ros/kinetic/setup.bash
-
 DESKTOPDIR=/usr/share/applications
 DESKTOPNAME=poweroff.desktop
-
-sudo mkdir -p /usr/share/handheld3dscanner
 
 echo "writing into ${DESKTOPDIR}/$DESKTOPNAME"
 
@@ -27,8 +23,3 @@ str="echo \"Type=Application\" >> ${DESKTOPDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
 str="echo \"Categories=System;\" >> ${DESKTOPDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-
-if [ ! -f RTAB-Map.png ]; then
-	cd ${BASEDIR}
-	wget https://raw.githubusercontent.com/introlab/rtabmap/master/guilib/src/images/RTAB-Map.png
-fi

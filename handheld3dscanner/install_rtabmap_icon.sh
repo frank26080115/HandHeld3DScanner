@@ -7,8 +7,6 @@ source /opt/ros/kinetic/setup.bash
 DESKTOPDIR=/usr/share/applications
 DESKTOPNAME=rtabmap.desktop
 
-sudo mkdir -p /usr/share/handheld3dscanner
-
 echo "writing into ${DESKTOPDIR}/$DESKTOPNAME"
 
 str="echo \"[Desktop Entry]\" > ${DESKTOPDIR}/$DESKTOPNAME"
