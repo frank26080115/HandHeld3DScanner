@@ -37,7 +37,19 @@ sudo chmod +x *.sh
 [ ! -f ${BASEDIR}/build_ros_rtabmap.done  ] && ./build_ros_rtabmap.sh
 ./install_rtabmap_icon.sh
 
+echo -e "\e[32m librealsense2, ROS Kinetic, and RTAB-Map have been installed \e[0m"
+
 ./configure_lxde_panel.sh
 ./configure_rtabmap_ini.sh
 
-echo "this installation script has finished"
+echo -e "\e[32m If you want to, we can patch the UVC kernel module so the Intel RealSense camera works as a webcam. This will take another hour and several gigabytes of storage."
+while read -r -t 0; do read -r; done
+read -p "Perform the patch? (y/n) " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	./uvc_kernel_patch.sh
+else
+	echo "You said NO"
+fi
+echo -e "\e[0m"
