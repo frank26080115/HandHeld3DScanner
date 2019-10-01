@@ -12,10 +12,10 @@ index c560e367f..e11d737ef 100644
      add_library(${LRS_TARGET} SHARED "")
  else()
 diff --git a/scripts/setup_udev_rules.sh b/scripts/setup_udev_rules.sh
-index 03af41c25..f15729da4 100755
+index 03af41c25..115020598 100755
 --- a/scripts/setup_udev_rules.sh
 +++ b/scripts/setup_udev_rules.sh
-@@ -7,14 +7,18 @@ exec 2> /dev/null
+@@ -7,14 +7,16 @@ exec 2> /dev/null
  con_dev=$(ls /dev/video* | wc -l)
  exec 2>&3
  
@@ -32,8 +32,6 @@ index 03af41c25..f15729da4 100755
 +		echo -e "\e[0m"
 +	done
  fi
-+echo poop
-+exit 1
  
  sudo cp config/99-realsense-libusb.rules /etc/udev/rules.d/
 -sudo udevadm control --reload-rules && udevadm trigger
