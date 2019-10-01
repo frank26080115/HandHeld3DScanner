@@ -1,3 +1,77 @@
+diff --git a/drivers/iio/gyro/hid-sensor-gyro-3d.c b/drivers/iio/gyro/hid-sensor-gyro-3d.c
+index 88e857c4baf4..b630d823f082 100644
+--- a/drivers/iio/gyro/hid-sensor-gyro-3d.c
++++ b/drivers/iio/gyro/hid-sensor-gyro-3d.c
+@@ -42,11 +42,13 @@ struct gyro_3d_state {
+ 	struct hid_sensor_hub_callbacks callbacks;
+ 	struct hid_sensor_common common_attributes;
+ 	struct hid_sensor_hub_attribute_info gyro[GYRO_3D_CHANNEL_MAX];
+-	u32 gyro_val[GYRO_3D_CHANNEL_MAX];
++	/* Reserve for 3 channels + padding + timestamp */
++	u32 gyro_val[GYRO_3D_CHANNEL_MAX + 3];
+ 	int scale_pre_decml;
+ 	int scale_post_decml;
+ 	int scale_precision;
+ 	int value_offset;
++	int64_t timestamp;
+ };
+ 
+ static const u32 gyro_3d_addresses[GYRO_3D_CHANNEL_MAX] = {
+@@ -87,7 +89,8 @@ static const struct iio_chan_spec gyro_3d_channels[] = {
+ 		BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+ 		BIT(IIO_CHAN_INFO_HYSTERESIS),
+ 		.scan_index = CHANNEL_SCAN_INDEX_Z,
+-	}
++	},
++	IIO_CHAN_SOFT_TIMESTAMP(3)
+ };
+ 
+ /* Adjust channel real bits based on report descriptor */
+@@ -195,10 +198,10 @@ static const struct iio_info gyro_3d_info = {
+ 
+ /* Function to push data to buffer */
+ static void hid_sensor_push_data(struct iio_dev *indio_dev, const void *data,
+-	int len)
++	int len, int64_t timestamp)
+ {
+ 	dev_dbg(&indio_dev->dev, "hid_sensor_push_data\n");
+-	iio_push_to_buffers(indio_dev, data);
++	iio_push_to_buffers(indio_dev, data, timestamp);
+ }
+ 
+ /* Callback handler to send event after all samples are received and captured */
+@@ -210,10 +213,16 @@ static int gyro_3d_proc_event(struct hid_sensor_hub_device *hsdev,
+ 	struct gyro_3d_state *gyro_state = iio_priv(indio_dev);
+ 
+ 	dev_dbg(&indio_dev->dev, "gyro_3d_proc_event\n");
+-	if (atomic_read(&gyro_state->common_attributes.data_ready))
++	if (atomic_read(&gyro_state->common_attributes.data_ready)) {
++		if (!gyro_state->timestamp) {
++			gyro_state->timestamp = iio_get_time_ns(indio_dev);
++		}
+ 		hid_sensor_push_data(indio_dev,
+ 				gyro_state->gyro_val,
+-				sizeof(gyro_state->gyro_val));
++				sizeof(gyro_state->gyro_val),
++				gyro_state->timestamp);
++		gyro_state->timestamp = 0;
++	}
+ 
+ 	return 0;
+ }
+@@ -238,6 +247,12 @@ static int gyro_3d_capture_sample(struct hid_sensor_hub_device *hsdev,
+ 						*(u32 *)raw_data;
+ 		ret = 0;
+ 	break;
++	case HID_USAGE_SENSOR_TIME_TIMESTAMP:
++		gyro_state->timestamp =
++			hid_sensor_convert_timestamp(
++					&gyro_state->common_attributes,
++					*(int64_t *)raw_data);
++	break;
+ 	default:
+ 		break;
+ 	}
 diff --git a/drivers/media/usb/uvc/Makefile b/drivers/media/usb/uvc/Makefile
 index 4f9eee4f81ab..93c870f4988a 100644
 --- a/drivers/media/usb/uvc/Makefile
@@ -113,8 +187,43 @@ index c3ddbf6c202a..6c00e0c14ca0 100644
  };
  
  /* ------------------------------------------------------------------------
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index ffffb66d51a0..b2734dee81ca 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -1366,7 +1366,14 @@ static void uvc_video_decode_bulk(struct urb *urb, struct uvc_streaming *stream,
+ 		do {
+ 			ret = uvc_video_decode_start(stream, buf, mem, len);
+ 			if (ret == -EAGAIN)
+-				uvc_video_next_buffers(stream, &buf, &meta_buf);
++			{
++				//uvc_video_next_buffers(stream, &buf, &meta_buf);
++				if (stream->dev->quirks & UVC_QUIRK_APPEND_UVC_HEADER)
++				{
++					uvc_video_decode_data(stream, buf, stream->bulk.header, 256);
++				}
++				buf = uvc_queue_next_buffer(&stream->queue,buf);
++			}
+ 		} while (ret == -EAGAIN);
+ 
+ 		/* If an error occurred skip the rest of the payload. */
+@@ -1400,8 +1407,13 @@ static void uvc_video_decode_bulk(struct urb *urb, struct uvc_streaming *stream,
+ 		if (!stream->bulk.skip_payload && buf != NULL) {
+ 			uvc_video_decode_end(stream, buf, stream->bulk.header,
+ 				stream->bulk.payload_size);
+-			if (buf->state == UVC_BUF_STATE_READY)
++			if (buf->state == UVC_BUF_STATE_READY) {
++				if (stream->dev->quirks & UVC_QUIRK_APPEND_UVC_HEADER) {
++					uvc_video_decode_data(stream, buf, stream->bulk.header,
++											stream->bulk.header_size);
++				}
+ 				uvc_video_next_buffers(stream, &buf, &meta_buf);
++			}
+ 		}
+ 
+ 		stream->bulk.header_size = 0;
 diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index a738486fd9d6..e62659d97ba1 100644
+index a738486fd9d6..8b0e4441d667 100644
 --- a/drivers/media/usb/uvc/uvcvideo.h
 +++ b/drivers/media/usb/uvc/uvcvideo.h
 @@ -162,6 +162,53 @@
@@ -171,6 +280,14 @@ index a738486fd9d6..e62659d97ba1 100644
  
  /* ------------------------------------------------------------------------
   * Driver specific constants.
+@@ -195,6 +242,7 @@
+ #define UVC_QUIRK_RESTRICT_FRAME_RATE	0x00000200
+ #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
+ #define UVC_QUIRK_FORCE_Y8		0x00000800
++#define UVC_QUIRK_APPEND_UVC_HEADER	0x00001000
+ 
+ /* Format flags */
+ #define UVC_FMT_FLAG_COMPRESSED		0x00000001
 diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
 index beded53c6039..753906c14bf9 100644
 --- a/include/uapi/linux/videodev2.h

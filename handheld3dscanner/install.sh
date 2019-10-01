@@ -48,7 +48,7 @@ read -p "Perform the patch? (y/n) " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-	./uvc_kernel_patch.sh
+	./kernel_patch.sh
 else
 	echo "You said NO"
 fi
