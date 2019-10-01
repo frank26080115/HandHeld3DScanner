@@ -30,6 +30,7 @@ git apply ${BASEDIR}/patch_${pkgname}_${gittag}.patch
 if [ -f /etc/udev/rules.d/99-realsense-libusb.rules ]; then
 	echo -e "\e[32m"
 	echo "The udev rules file have already been copied."
+	while read -r -t 0; do read -r; done
 	read -p "Run setup_udev_rules again? (y/n) " -n 1 -r
 	echo    # move to a new line
 	if [[ $REPLY =~ ^[Yy]$ ]]

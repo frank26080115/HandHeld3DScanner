@@ -4,6 +4,7 @@ BASEDIR=$(cd $(dirname "$0"); pwd)
 
 echo -e "\e[32m"
 echo "The RTAB-Map configuration file can be overwritten with some default values."
+while read -r -t 0; do read -r; done
 read -p "Perform the reconfiguration? (y/n) " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
