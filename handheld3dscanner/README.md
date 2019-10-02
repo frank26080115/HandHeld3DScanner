@@ -16,10 +16,8 @@ Common errors that occur during the build process are resolved automatically thr
 
 The installation script does NOT:
 
- * add the icons to the LXDE desktop or task bar, but it makes the menu item available to be added
  * setup the HyperPixel display
  * modify the boot config file
- * apply UVC patches to the kernel (the Intel RealSense camera cannot work as a webcam because of this, sorry)
 
 Installation Instructions
 =========================
