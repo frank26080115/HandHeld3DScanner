@@ -1,3 +1,4 @@
 #!/bin/bash
 
-realsense-viewer
+#realsense-viewer
+rs-pointcloud
