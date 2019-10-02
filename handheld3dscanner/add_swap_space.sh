@@ -18,6 +18,6 @@ sudo /etc/init.d/dphys-swapfile start
 
 check=$(free -m | grep 'Swap' | awk '{print $2}')
 if [ $check -lt 1023 ] ; then
-	echo "swap memory failed to update, $check" >&2
+	echo -e "\e[31m swap memory failed to update, $check \e[0m" >&2
 	exit 1
 fi

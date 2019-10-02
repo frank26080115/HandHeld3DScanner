@@ -111,7 +111,7 @@ cd ${ros_catkin_ws}
 patch_opencv3_cv2cpp=1
 if [ $patch_opencv3_cv2cpp -ne 0 ]; then
 	echo "applying patch to opencv3's cv2.cpp"
-	[ ! -f ${BASEDIR}/patchros_opencv3_cv2cpp.patch ] && echo "patch file missing" && exit 1
+	[ ! -f ${BASEDIR}/patchros_opencv3_cv2cpp.patch ] && echo -e "\e[31m patch file missing \e[0m" && exit 1
 	[ ! -f ${BASEDIR}/patchros_opencv3_cv2cpp.patch.done ] && patch -f ${ros_catkin_ws}/src/opencv3/modules/python/src2/cv2.cpp < ${BASEDIR}/patchros_opencv3_cv2cpp.patch || true
 	# https://github.com/opencv/opencv/issues/14856#issuecomment-504416696
 	echo "patch command may have failed if it was already applied, so don't worry"
@@ -121,7 +121,7 @@ fi
 patch_opencv3_cmakeliststxt=1
 if [ $patch_opencv3_cmakeliststxt -ne 0 ]; then
 	echo "applying patch to opencv3's cv2.cpp"
-	[ ! -f ${BASEDIR}/patchros_opencv3_cmakeliststxt.patch ] && echo "patch file missing" && exit 1
+	[ ! -f ${BASEDIR}/patchros_opencv3_cmakeliststxt.patch ] && echo -e "\e[31m patch file missing \e[0m" && exit 1
 	[ ! -f ${BASEDIR}/patchros_opencv3_cmakeliststxt.patch.done ] && patch -f ${ros_catkin_ws}/src/opencv3/CMakeLists.txt < ${BASEDIR}/patchros_opencv3_cmakeliststxt.patch || true
 	# this patch enables non-free modules like SIFT and SURF, as well as disables problematic modules
 	echo "patch command may have failed if it was already applied, so don't worry"
@@ -131,7 +131,7 @@ fi
 patch_geometry2_buffercorecpp=1
 if [ $patch_geometry2_buffercorecpp -ne 0 ]; then
 	echo "applying patch to geometry2's buffer_core.cpp"
-	[ ! -f ${BASEDIR}/patchros_geometry2_buffercorecpp.patch ] && echo "patch file missing" && exit 1
+	[ ! -f ${BASEDIR}/patchros_geometry2_buffercorecpp.patch ] && echo -e "\e[31m patch file missing \e[0m" && exit 1
 	[ ! -f ${BASEDIR}/patchros_geometry2_buffercorecpp.patch.done ] && patch -f ${ros_catkin_ws}/src/geometry2/tf2/src/buffer_core.cpp < ${BASEDIR}/patchros_geometry2_buffercorecpp.patch || true
 	# https://github.com/ros/console_bridge/issues/56 and https://github.com/ros/ros-overlay/issues/509
 	echo "patch command may have failed if it was already applied, so don't worry"
@@ -232,7 +232,7 @@ do
 			echo "applying patch to patch_qt_gui_cpp_sip's makefile"
 			sudo sed -i -e 's/\-l\-lpthread//g' ${ros_catkin_ws}/build_isolated/qt_gui_cpp/sip/qt_gui_cpp_sip/Makefile
 		else
-			echo "unable to apply patch for qt_gui_cpp_sip/Makefile" && exit 1
+			echo -e "\e[31m unable to apply patch for qt_gui_cpp_sip/Makefile \e[0m" && exit 1
 		fi
 		sudo chown -R $(id -u):$(id -g) ${install_dir}
 		sudo chown -R $(id -u):$(id -g) ${ros_catkin_ws}/build_isolated

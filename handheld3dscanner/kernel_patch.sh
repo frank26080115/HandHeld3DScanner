@@ -11,12 +11,12 @@ echo "Currently you are using kernel version $(uname -r) , and this script is go
 echo "If this is wrong then the patch won't work"
 
 kregex='s/[^0-9]*([0-9]+\.[0-9]+)[^0-9]*.*/\1/g'
-[ $(uname -r | sed -r "$kregex") != $(echo "$gitbranch" | sed -r "$kregex") ] && echo "ERROR: Kernel Version and Branch MISMATCH" && exit 1
+[ $(uname -r | sed -r "$kregex") != $(echo "$gitbranch" | sed -r "$kregex") ] && echo -e "\e[31m ERROR: Kernel Version and Branch MISMATCH \e[0m" && exit 1
 
 BASEDIR=$(cd $(dirname "$0"); pwd)
 WORKINGDIR=${BASEDIR}/kernelpatch
 
-[ ! -f ${BASEDIR}/patch_kernel_${gitbranch}.patch ] && echo "ERROR: Patch File Missing! ${BASEDIR}/patch_kernel_${gitbranch}.patch doesn't exist, your kernel version might not be supported by this script yet" && exit 1
+[ ! -f ${BASEDIR}/patch_kernel_${gitbranch}.patch ] && echo -e "\e[31m ERROR: Patch File Missing! ${BASEDIR}/patch_kernel_${gitbranch}.patch doesn't exist, your kernel version might not be supported by this script yet \e[0m" && exit 1
 
 mkdir -p ${WORKINGDIR} && cd ${WORKINGDIR}
 

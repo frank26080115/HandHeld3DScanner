@@ -3,7 +3,7 @@
 BASEDIR=$(cd $(dirname "$0"); pwd)
 
 if [ "$(cd ${BASEDIR}; pwd)" != "$(pwd)" ]; then
-	echo "Script not called from the correct working directory, $(cd ${BASEDIR}; pwd) != $(pwd)"
+	echo -e "\e[31m Script not called from the correct working directory, $(cd ${BASEDIR}; pwd) != $(pwd) \e[0m"
 	exit 1
 fi
 
@@ -42,7 +42,7 @@ echo -e "\e[32m librealsense2, ROS Kinetic, and RTAB-Map have been installed \e[
 ./configure_lxde_panel.sh
 ./configure_rtabmap_ini.sh
 
-echo -e "\e[32m If you want to, we can patch the UVC kernel module so the Intel RealSense camera works as a webcam. This will take another hour and several gigabytes of storage."
+echo -e "\e[32m If you want to, we can patch the UVC kernel module so the Intel RealSense camera works as a webcam. This will take another hour and several gigabytes of storage. This step will require some user interaction as well."
 while read -r -t 0; do read -r; done
 read -p "Perform the patch? (y/n) " -n 1 -r
 echo    # move to a new line
