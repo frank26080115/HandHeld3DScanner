@@ -12,24 +12,25 @@ index c560e367f..e11d737ef 100644
      add_library(${LRS_TARGET} SHARED "")
  else()
 diff --git a/examples/pointcloud/rs-pointcloud.cpp b/examples/pointcloud/rs-pointcloud.cpp
-index bd31199bd..f88fc79d0 100644
+index bd31199bd..5d42ca0bf 100644
 --- a/examples/pointcloud/rs-pointcloud.cpp
 +++ b/examples/pointcloud/rs-pointcloud.cpp
-@@ -25,8 +25,18 @@ int main(int argc, char * argv[]) try
+@@ -25,8 +25,19 @@ int main(int argc, char * argv[]) try
  
      // Declare RealSense pipeline, encapsulating the actual device and sensors
      rs2::pipeline pipe;
 -    // Start streaming with default recommended configuration
 -    pipe.start();
 +
-+    if (argc <= 0) {
++    if (argc <= 1) {
 +        // Start streaming with default recommended configuration
 +        pipe.start();
 +    }
 +    else {
 +        // Declare a config that records to a file
 +        rs2::config cfg;
-+        cfg.enable_record_to_file(argv[0]);
++        cfg.enable_record_to_file(argv[1]);
++        std::cout << "Saving to file: " << argv[1] << std::endl;
 +        // Start streaming with default configuration, but records to a file
 +        pipe.start(cfg);
 +    }
