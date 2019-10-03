@@ -56,6 +56,8 @@ This entire installation takes an entire day! Make sure your power supply and in
 
 Most of the longer build processes will generate a log file because the terminal screen will fill up. Use these log files to troubleshoot.
 
+Do NOT use the Raspberry Pi to firmware update your RealSense camera firmware! It will not work.
+
 Modifications
 =============
 
