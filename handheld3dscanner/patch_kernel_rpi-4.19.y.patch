@@ -83,7 +83,7 @@ index 4f9eee4f81ab..93c870f4988a 100644
  		  uvc_status.o uvc_isight.o uvc_debugfs.o uvc_metadata.o
  ifeq ($(CONFIG_MEDIA_CONTROLLER),y)
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index c3ddbf6c202a..6c00e0c14ca0 100644
+index c3ddbf6c202a..1062e3cc520f 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
 @@ -199,6 +199,8 @@ static struct uvc_format_desc uvc_fmts[] = {
@@ -95,7 +95,7 @@ index c3ddbf6c202a..6c00e0c14ca0 100644
  	{
  		.name		= "Depth data 16-bit (Z16)",
  		.guid		= UVC_GUID_FORMAT_INVZ,
-@@ -209,11 +211,91 @@ static struct uvc_format_desc uvc_fmts[] = {
+@@ -209,11 +211,66 @@ static struct uvc_format_desc uvc_fmts[] = {
  		.guid		= UVC_GUID_FORMAT_INVI,
  		.fcc		= V4L2_PIX_FMT_Y10,
  	},
@@ -107,26 +107,6 @@ index c3ddbf6c202a..6c00e0c14ca0 100644
  	},
 +
 +/* frank26080115: added here for Intel RealSense, with guidance from https://github.com/IntelRealSense/librealsense/blob/master/scripts/realsense-camera-formats.patch */
-+//	{
-+//		.name		= "Greyscale 8 L/R (Y8I)",
-+//		.guid		= UVC_GUID_FORMAT_Y8I,
-+//		.fcc		= V4L2_PIX_FMT_Y8I,
-+//	},
-+//	{
-+//		.name		= "Greyscale 12 L/R (Y12I)",
-+//		.guid		= UVC_GUID_FORMAT_Y12I,
-+//		.fcc		= V4L2_PIX_FMT_Y12I,
-+//	},
-+//	{
-+//		.name		= "Depth data 16-bit (Z16)",
-+//		.guid		= UVC_GUID_FORMAT_Z16,
-+//		.fcc		= V4L2_PIX_FMT_Z16,
-+//	},
-+//	{
-+//		.name		= "Bayer 10-bit (SRGGB10P)",
-+//		.guid		= UVC_GUID_FORMAT_RW10,
-+//		.fcc		= V4L2_PIX_FMT_SRGGB10P,
-+//	},
 +	{
 +		.name		= "Raw data 8-bit (RAW8)",
 +		.guid		= UVC_GUID_FORMAT_RAW8,
@@ -142,11 +122,6 @@ index c3ddbf6c202a..6c00e0c14ca0 100644
 +		.guid		= UVC_GUID_FORMAT_INVZ,
 +		.fcc		= V4L2_PIX_FMT_INVZ,
 +	},
-+//	{
-+//		.name		= "Depth:IR 16:8 24-bit (INZI)",
-+//		.guid		= UVC_GUID_FORMAT_INZI,
-+//		.fcc		= V4L2_PIX_FMT_INZI,
-+//	},
 +	{
 +		.name		= "Depth 16-bit (INVR)",
 +		.guid		= UVC_GUID_FORMAT_INVR,
@@ -223,47 +198,26 @@ index ffffb66d51a0..b2734dee81ca 100644
  
  		stream->bulk.header_size = 0;
 diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index a738486fd9d6..8b0e4441d667 100644
+index a738486fd9d6..b4f8b81763eb 100644
 --- a/drivers/media/usb/uvc/uvcvideo.h
 +++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -162,6 +162,53 @@
+@@ -162,6 +162,32 @@
  	{0x32, 0x00, 0x00, 0x00, 0x02, 0x00, 0x10, 0x00, \
  	 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
  
 +/* frank26080115: added here for Intel RealSense, with guidance from https://github.com/IntelRealSense/librealsense/blob/master/scripts/realsense-camera-formats.patch */
-+//#define UVC_GUID_FORMAT_Y8I \
-+//	{ 'Y',  '8',  'I',  ' ', 0x00, 0x00, 0x10, 0x00, \
-+//	 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
-+//#define UVC_GUID_FORMAT_Y12I \
-+//	{ 'Y',  '1',  '2',  'I', 0x00, 0x00, 0x10, 0x00, \
-+//	 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
-+//#define UVC_GUID_FORMAT_Z16 \
-+//	{ 'Z',  '1',  '6',  ' ', 0x00, 0x00, 0x10, 0x00, \
-+//	 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
-+//#define UVC_GUID_FORMAT_RW10 \
-+//	{ 'R',  'W',  '1',  '0', 0x00, 0x00, 0x10, 0x00, \
-+//	 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
 +#define UVC_GUID_FORMAT_RAW8 \
 +    { 'R',  'A',  'W',  '8', 0x66, 0x1a, 0x42, 0xa2, \
 +     0x90, 0x65, 0xd0, 0x18, 0x14, 0xa8, 0xef, 0x8a}
 +#define UVC_GUID_FORMAT_RW16 \
 +    { 'R',  'W',  '1',  '6', 0x00, 0x00, 0x10, 0x00, \
 +     0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
-+//#define UVC_GUID_FORMAT_INVZ \
-+//	{ 'I',  'N',  'V',  'Z', 0x90, 0x2d, 0x58, 0x4a, \
-+//	 0x92, 0x0b, 0x77, 0x3f, 0x1f, 0x2c, 0x55, 0x6b}
-+//#define UVC_GUID_FORMAT_INZI \
-+//	{ 'I',  'N',  'Z',  'I', 0x66, 0x1a, 0x42, 0xa2, \
-+//	 0x90, 0x65, 0xd0, 0x18, 0x14, 0xa8, 0xef, 0x8a}
 +#define UVC_GUID_FORMAT_INVR \
 +	{ 'I',  'N',  'V',  'R', 0x90, 0x2d, 0x58, 0x4a, \
 +	 0x92, 0x0b, 0x77, 0x3f, 0x1f, 0x2c, 0x55, 0x6b}
 +#define UVC_GUID_FORMAT_INRI \
 +	{ 'I',  'N',  'R',  'I', 0x90, 0x2d, 0x58, 0x4a, \
 +	 0x92, 0x0b, 0x77, 0x3f, 0x1f, 0x2c, 0x55, 0x6b}
-+//#define UVC_GUID_FORMAT_INVI \
-+//	{ 'I',  'N',  'V',  'I', 0xdb, 0x57, 0x49, 0x5e, \
-+//	 0x8e, 0x3f, 0xf4, 0x79, 0x53, 0x2b, 0x94, 0x6f}
 +#define UVC_GUID_FORMAT_RELI \
 +	{ 'R',  'E',  'L',  'I', 0x14, 0x13, 0x43, 0xf9, \
 +	 0xa7, 0x5a, 0xee, 0x6b, 0xbf, 0x01, 0x2e, 0x23}
@@ -280,7 +234,7 @@ index a738486fd9d6..8b0e4441d667 100644
  
  /* ------------------------------------------------------------------------
   * Driver specific constants.
-@@ -195,6 +242,7 @@
+@@ -195,6 +221,7 @@
  #define UVC_QUIRK_RESTRICT_FRAME_RATE	0x00000200
  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
  #define UVC_QUIRK_FORCE_Y8		0x00000800
@@ -289,25 +243,18 @@ index a738486fd9d6..8b0e4441d667 100644
  /* Format flags */
  #define UVC_FMT_FLAG_COMPRESSED		0x00000001
 diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index beded53c6039..753906c14bf9 100644
+index beded53c6039..c347eaf3ac94 100644
 --- a/include/uapi/linux/videodev2.h
 +++ b/include/uapi/linux/videodev2.h
-@@ -699,6 +699,24 @@ struct v4l2_pix_format {
+@@ -699,6 +699,17 @@ struct v4l2_pix_format {
  #define V4L2_PIX_FMT_IPU3_SGRBG10	v4l2_fourcc('i', 'p', '3', 'G') /* IPU3 packed 10-bit GRBG bayer */
  #define V4L2_PIX_FMT_IPU3_SRGGB10	v4l2_fourcc('i', 'p', '3', 'r') /* IPU3 packed 10-bit RGGB bayer */
  
 +/* frank26080115: added here for Intel RealSense, with guidance from https://github.com/IntelRealSense/librealsense/blob/master/scripts/realsense-camera-formats.patch */
-+//#define V4L2_PIX_FMT_Y8I      v4l2_fourcc('Y', '8', 'I', ' ') /* Greyscale 8-bit L/R interleaved */
-+//#define V4L2_PIX_FMT_Y12I     v4l2_fourcc('Y', '1', '2', 'I') /* Greyscale 12-bit L/R interleaved */
-+//#define V4L2_PIX_FMT_Z16      v4l2_fourcc('Z', '1', '6', ' ') /* Depth data 16-bit */
 +#define V4L2_PIX_FMT_Y8       v4l2_fourcc('Y', '8', ' ', ' ') /* Greyscale 8-bit */
-+//#define V4L2_PIX_FMT_Y10      v4l2_fourcc('Y', '1', '0', ' ') /* Greyscale 10-bit */
-+//#define V4L2_PIX_FMT_Y12      v4l2_fourcc('Y', '1', '2', ' ') /* Greyscale 12-bit */
-+//#define V4L2_PIX_FMT_Y16      v4l2_fourcc('Y', '1', '6', ' ') /* Greyscale 16-bit */
 +#define V4L2_PIX_FMT_RAW8     v4l2_fourcc('R', 'A', 'W', '8') /* Raw data 8-bit */
 +#define V4L2_PIX_FMT_RW16     v4l2_fourcc('R', 'W', '1', '6') /* Raw data 16-bit */
 +#define V4L2_PIX_FMT_INVZ     v4l2_fourcc('I', 'N', 'V', 'Z') /* 16 Depth */
-+//#define V4L2_PIX_FMT_INZI     v4l2_fourcc('I', 'N', 'Z', 'I') /* 24 Depth/IR 16:8 */
 +#define V4L2_PIX_FMT_INVR     v4l2_fourcc('I', 'N', 'V', 'R') /* 16 Depth */
 +#define V4L2_PIX_FMT_INRI     v4l2_fourcc('I', 'N', 'R', 'I') /* 24 Depth/IR 16:8 */
 +#define V4L2_PIX_FMT_INVI     v4l2_fourcc('I', 'N', 'V', 'I') /* 8 IR */
