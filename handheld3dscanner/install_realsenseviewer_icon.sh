@@ -2,21 +2,22 @@
 
 BASEDIR=$(cd $(dirname "$0"); pwd)
 
-DESKTOPDIR=/usr/share/applications
+APPLICATIONDIR=/usr/share/applications
+DESKTOPDIR=~/Desktop
 DESKTOPNAME=realsenseviewer.desktop
 
-echo "writing into ${DESKTOPDIR}/$DESKTOPNAME"
+echo "writing into ${APPLICATIONDIR}/$DESKTOPNAME"
 
-str="echo \"[Desktop Entry]\" > ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"[Desktop Entry]\" > ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Name=RealSense-Viewer\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Name=RealSense-Viewer\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Comment=RealSense-Viewer for Intel RealSense cameras\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Comment=RealSense-Viewer for Intel RealSense cameras\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Exec=${BASEDIR}/run_realsenseviewer.sh\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Exec=${BASEDIR}/run_realsenseviewer.sh\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
 if [ -f ${BASEDIR}/realsenseviewer_icon.png ] ; then
-	str="echo \"Icon=${BASEDIR}/realsenseviewer_icon.png\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+	str="echo \"Icon=${BASEDIR}/realsenseviewer_icon.png\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 else
 	ico_path=${BASEDIR}/librealsense/tools/realsense-viewer/res/icon.ico
 	do_convert=1
@@ -29,15 +30,16 @@ else
 		mkdir -p ${rsvicons_dir} && cd ${rsvicons_dir}
 		icotool -x ${ico_path}
 		# change the file name to something else if we need to
-		str="echo \"Icon=${rsvicons_dir}/icon_4_48x48x32.png\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+		str="echo \"Icon=${rsvicons_dir}/icon_4_48x48x32.png\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 	else
-		str="echo \"Icon=${ico_path}\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+		str="echo \"Icon=${ico_path}\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 	fi
 fi
 sudo sh -c "$str"
-str="echo \"Terminal=false\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Terminal=false\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Type=Application\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Type=Application\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Categories=AudioVideo;Player;Recorder;\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Categories=AudioVideo;Player;Recorder;\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
+cp ${APPLICATIONDIR}/$DESKTOPNAME $DESKTOPDIR

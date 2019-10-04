@@ -4,27 +4,29 @@ BASEDIR=$(cd $(dirname "$0"); pwd)
 
 source /opt/ros/kinetic/setup.bash
 
-DESKTOPDIR=/usr/share/applications
+APPLICATIONDIR=/usr/share/applications
+DESKTOPDIR=~/Desktop
 DESKTOPNAME=rtabmap.desktop
 
-echo "writing into ${DESKTOPDIR}/$DESKTOPNAME"
+echo "writing into ${APPLICATIONDIR}/$DESKTOPNAME"
 
-str="echo \"[Desktop Entry]\" > ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"[Desktop Entry]\" > ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Name=RTAB-Map\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Name=RTAB-Map\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Comment=RTAB-Map for robot visual odometry\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Comment=RTAB-Map for robot visual odometry\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Exec=${BASEDIR}/run_rtabmap.sh\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Exec=${BASEDIR}/run_rtabmap.sh\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Icon=${BASEDIR}/RTAB-Map.png\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Icon=${BASEDIR}/RTAB-Map.png\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Terminal=false\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Terminal=false\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Type=Application\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Type=Application\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
-str="echo \"Categories=AudioVideo;Player;Recorder;\" >> ${DESKTOPDIR}/$DESKTOPNAME"
+str="echo \"Categories=AudioVideo;Player;Recorder;\" >> ${APPLICATIONDIR}/$DESKTOPNAME"
 sudo sh -c "$str"
+cp ${APPLICATIONDIR}/$DESKTOPNAME $DESKTOPDIR
 
 if [ ! -f RTAB-Map.png ]; then
 	cd ${BASEDIR}

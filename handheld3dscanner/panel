@@ -62,19 +62,10 @@ Plugin {
   type=launchbar
   Config {
     Button {
-      id=realsenseviewer.desktop
-    }
-    Button {
-      id=rtabmap.desktop
-    }
-    Button {
       id=pcmanfm.desktop
     }
     Button {
       id=lxterminal.desktop
-    }
-    Button {
-      id=poweroff.desktop
     }
   }
 }
@@ -91,7 +82,7 @@ Plugin {
     tooltips=1
     IconsOnly=0
     ShowAllDesks=0
-    UseMouseWheel=1
+    UseMouseWheel=0
     UseUrgencyHint=1
     FlatButton=0
     MaxTaskWidth=200
@@ -118,29 +109,6 @@ Plugin {
 }
 Plugin {
   type=dhcpcdui
-  Config {
-  }
-}
-Plugin {
-  type=space
-  Config {
-    Size=2
-  }
-  expand=0
-}
-Plugin {
-  type=ptbatt
-  Config {
-  }
-}
-Plugin {
-  type=space
-  Config {
-    Size=4
-  }
-}
-Plugin {
-  type=cpufreq
   Config {
   }
 }

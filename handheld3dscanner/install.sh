@@ -39,9 +39,6 @@ sudo chmod +x *.sh
 
 echo -e "\e[32m librealsense2, ROS Kinetic, and RTAB-Map have been installed \e[0m"
 
-./configure_lxde_panel.sh
-./configure_rtabmap_ini.sh
-
 echo -e "\e[32m If you want to, we can patch the UVC kernel module so the Intel RealSense camera works as a webcam. This will take another hour and several gigabytes of storage. This step will require some user interaction as well."
 while read -r -t 0; do read -r; done
 read -p "Perform the patch? (y/n) " -n 1 -r
@@ -53,3 +50,6 @@ else
 	echo "You said NO"
 fi
 echo -e "\e[0m"
+
+./configure_lxde_panel.sh
+./configure_rtabmap_ini.sh

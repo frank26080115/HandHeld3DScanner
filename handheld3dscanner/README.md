@@ -28,7 +28,7 @@ Or copy this `handheld3dscanner` directory (case sensitive!), upload it somewher
 
 `./install.sh` needs execute permissions! Use the terminal command `cd` to change directory into `handheld3dscanner`, then run the terminal command `chmod +x install.sh`.
 
-Before you start though, make sure you've used `sudo raspi-config` to configure your system first, expand the file-system size, and setup networking as appropriate.
+Before you start though, make sure you've used `sudo raspi-config` to configure your system first, expand the file-system size, and setup networking as appropriate. Please install the HyperPixel first as well, due to one of the installation steps reading your screen resolution.
 
 Usage Instructions
 ==================

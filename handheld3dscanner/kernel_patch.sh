@@ -103,5 +103,7 @@ echo -e "\e[32m kernel module patching script has completed \e[0m"
 
 echo -e "\e[32m installing Cheese just for fun \e[0m"
 sudo apt-get install -y cheese
+cheeseicon=$(ls -w 1 /usr/share/applications | grep -i cheese | grep desktop)
+cp /usr/share/applications/$cheeseicon ~/Desktop
 
 echo -e "\e[32m done, I think you should reboot \e[0m"
