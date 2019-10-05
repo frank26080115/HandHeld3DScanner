@@ -88,10 +88,10 @@ def demo(args):
 					os.mkdir(dirpath_ir_left)
 					os.mkdir(dirpath_ir_right)
 
-				cv2.imwrite(os.path.join(dirpath_depth, "%08.jpg" % saveidx), depth_colormap)
-				cv2.imwrite(os.path.join(dirpath_color, "%08.jpg" % saveidx), color_image)
-				cv2.imwrite(os.path.join(dirpath_ir_left, "%08.jpg" % saveidx), irleft_image)
-				cv2.imwrite(os.path.join(dirpath_ir_right, "%08.jpg" % saveidx), irright_image)
+				cv2.imwrite(os.path.join(dirpath_depth, "%08u.jpg" % saveidx), depth_colormap)
+				cv2.imwrite(os.path.join(dirpath_color, "%08u.jpg" % saveidx), color_image)
+				cv2.imwrite(os.path.join(dirpath_ir_left, "%08u.jpg" % saveidx), irleft_image)
+				cv2.imwrite(os.path.join(dirpath_ir_right, "%08u.jpg" % saveidx), irright_image)
 				saveidx += 1
 			else:
 				if now is not None:
