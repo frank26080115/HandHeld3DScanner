@@ -251,5 +251,4 @@ done
 [ $catkin_failed -ne 0 ] && exit 1
 
 cd ${BASEDIR}
-./source_ros.sh
 touch build_ros.done

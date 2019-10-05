@@ -156,5 +156,8 @@ done
 
 [ $catkin_failed -ne 0 ] && exit 1
 
+# assumed rtabmap is installed in the kinetic directory, we symlink it to our local bin
+sudo ln -s $(which rtabmap) /usr/local/bin/rtabmap
+
 cd ${BASEDIR}
 touch ${BASEDIR}/build_ros_rtabmap.done

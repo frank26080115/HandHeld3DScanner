@@ -32,7 +32,6 @@ sudo chmod +x *.sh
 # otherwise, it will interfere with some later build steps and cause crashes
 
 [ ! -f ${BASEDIR}/build_ros.done          ] && ./build_ros.sh
-./source_ros.sh
 
 [ ! -f ${BASEDIR}/build_ros_rtabmap.done  ] && ./build_ros_rtabmap.sh
 ./install_rtabmap_icon.sh
