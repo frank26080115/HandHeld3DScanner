@@ -39,7 +39,7 @@ sudo apt-get install -y bison flex libssl-dev bc
 echo -e "\e[32m performing edits to the files now \e[0m"
 git apply ${BASEDIR}/patch_kernel_${gitbranch}.patch
 
-echo -e "\e[32m calling make... it will ask you questions, please just use the default answer suggested \e[0m"
+echo -e "\e[32m calling make... it might ask you questions, please just use the default answer suggested \e[0m"
 
 CONFIG_LOCATION=/usr/src/linux-headers-`uname -r`
 
@@ -47,7 +47,7 @@ CONFIG_LOCATION=/usr/src/linux-headers-`uname -r`
 cp $CONFIG_LOCATION/.config .
 cp $CONFIG_LOCATION/Module.symvers .
 
-make scripts oldconfig modules_prepare
+yes "" | make scripts olddefconfig modules_prepare
 
 echo -e "\e[32m beginning compilation... \e[0m"
 # Make modules
