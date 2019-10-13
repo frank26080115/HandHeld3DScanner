@@ -43,6 +43,12 @@ echo -e "\e[32m calling make... it might ask you questions, please just use the 
 
 CONFIG_LOCATION=/usr/src/linux-headers-`uname -r`
 
+if [ ! -f $CONFIG_LOCATION/.config ]; then
+	echo -e "\e[31m Problem: you need to reboot! It seems like your kernel was updated as a part of the \"apt-get upgrade\" step so the \"uname -r\" report \"$(uname -r)\" does not match the linux headers directory \"$(ls /usr/src | grep linux-headers | tail -n1)\" \e[0m"
+	echo -e "\e[32m After you reboot, simply call ./install.sh again \e[0m"
+	exit 1
+fi
+
 # Prepare to compile modules
 cp $CONFIG_LOCATION/.config .
 cp $CONFIG_LOCATION/Module.symvers .
