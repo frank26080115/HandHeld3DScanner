@@ -26,7 +26,7 @@ if [ ! -d ${ros_catkin_ws}/src ]; then
 		skip_collada_urdf_str='--exclude collada_parser collada_urdf'
 	fi
 
-	rosinstall_generator desktop geometry2 roscpp diagnostic_updater rtabmap_ros --rosdistro kinetic --deps --wet-only ${skip_collada_urdf_str} --tar > kinetic-desktop-wet.rosinstall
+	rosinstall_generator desktop geometry2 roscpp diagnostic_updater rtabmap_ros random_numbers --rosdistro kinetic --deps --wet-only ${skip_collada_urdf_str} --tar > kinetic-desktop-wet.rosinstall
 	wstool init src kinetic-desktop-wet.rosinstall
 	# use
 	# wstool update -j4 -t src
