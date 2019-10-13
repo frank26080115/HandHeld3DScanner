@@ -103,6 +103,7 @@ if [ ! -f ${ros_catkin_ws}/rosdep.done ]; then
 
 fi
 
+# we only included rtabmap_ros for automatic dependancy fetching, but we don't actually want to build it yet
 [ -d ${ros_catkin_ws}/src/rtabmap_ros ] && sudo rm -rf ${ros_catkin_ws}/src/rtabmap_ros
 [ -d ${ros_catkin_ws}/src/rtabmap ] && sudo rm -rf ${ros_catkin_ws}/src/rtabmap
 
