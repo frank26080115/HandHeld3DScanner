@@ -52,3 +52,24 @@ echo -e "\e[0m"
 
 ./configure_lxde_panel.sh
 ./configure_rtabmap_ini.sh
+
+if [ -d extras ] ; then
+echo -e "\e[32m If you want to, we can add some extra features to RTAB-Map. This takes some extra time and disk space."
+while read -r -t 0; do read -r; done
+read -p "Add extra features? (y/n) " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	chmod +x extras/*.sh
+	cd extras
+	./build_all_extras.sh
+	# this step above would've deleted the cached built artifacts
+	cd ${BASEDIR}
+	./build_ros_rtabmap.sh "-DWITH_G2O=OFF"
+else
+	echo "You said NO"
+fi
+echo -e "\e[0m"
+fi
+
+echo -e "\e[32m All Installation Done \e[0m"

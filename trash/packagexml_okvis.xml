@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>okvis</name>
+  <version>1.1.1</version>
+  <description>okvis</description>
+
+  <maintainer email="sleutenegger@sleutenegger.com">Stefan Leutenegger</maintainer>
+  <license>Copyleft</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+  <export>
+    <!-- Specify that this is not really a Catkin package-->
+    <build_type>cmake</build_type>
+  </export>
+</package>
+

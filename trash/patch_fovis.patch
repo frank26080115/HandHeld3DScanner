@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3b44cb5..5715319 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -12,7 +12,7 @@ if(PKG_CONFIG_FOUND)
+ endif()
+ 
+ # Do we want to use SSE?
+-option(USE_SSE "Enables SSE support" ON)
++option(USE_SSE "Enables SSE support" OFF)
+ if(USE_SSE)
+     set(USE_SSE_MESSAGE "Enabled")
+     add_definitions(-DFOVIS_USE_SSE)

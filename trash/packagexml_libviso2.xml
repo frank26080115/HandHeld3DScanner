@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>libviso2</name>
+  <version>0.0.1</version>
+  <description>libviso2</description>
+
+  <maintainer email="akhil.nagariya@gmail.com">Akhil</maintainer>
+
+  <license>GNU v2</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+  <export>
+    <!-- Specify that this is not really a Catkin package-->
+    <build_type>cmake</build_type>
+  </export>
+</package>
+

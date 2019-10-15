@@ -81,7 +81,7 @@ if [[ -z "$1" ]]; then
 	# removing these extra features is a safe build that's known to work
 	# use the $1 arg later to add extra features
 else
-	extra_options="-DWITH_G2O=OFF $1"
+	extra_options="$1"
 fi
 
 # I've noticed some failures in catkin_make_isolated that might suggest we need to watch out for permission issues

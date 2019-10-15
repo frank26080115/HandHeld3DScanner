@@ -1,0 +1,57 @@
+diff --git a/libfovis/libfovis/frame.cpp b/libfovis/libfovis/frame.cpp
+index 76e89bf..5b803e6 100644
+--- a/libfovis/libfovis/frame.cpp
++++ b/libfovis/libfovis/frame.cpp
+@@ -2,7 +2,9 @@
+ 
+ #include <iostream>
+ 
++#ifdef FOVIS_USE_SSE
+ #include <emmintrin.h>
++#endif
+ 
+ #include "visual_odometry.hpp"
+ #include "frame.hpp"
+diff --git a/libfovis/libfovis/internal_utils.hpp b/libfovis/libfovis/internal_utils.hpp
+index f99ae53..5bb9391 100644
+--- a/libfovis/libfovis/internal_utils.hpp
++++ b/libfovis/libfovis/internal_utils.hpp
+@@ -5,7 +5,10 @@
+ 
+ #include <Eigen/Core>
+ #include <Eigen/Geometry>
++
++#ifdef FOVIS_USE_SSE
+ #include <emmintrin.h>
++#endif
+ 
+ #include "options.hpp"
+ 
+diff --git a/libfovis/libfovis/stereo_calibration.cpp b/libfovis/libfovis/stereo_calibration.cpp
+index ba2ded5..295fa90 100644
+--- a/libfovis/libfovis/stereo_calibration.cpp
++++ b/libfovis/libfovis/stereo_calibration.cpp
+@@ -3,7 +3,9 @@
+ #include <cstdio>
+ #include <iostream>
+ 
++#ifdef FOVIS_USE_SSE
+ #include <emmintrin.h>
++#endif
+ 
+ #include "stereo_rectify.hpp"
+ 
+diff --git a/libfovis/libfovis/stereo_depth.cpp b/libfovis/libfovis/stereo_depth.cpp
+index 102840a..e5d9fa5 100644
+--- a/libfovis/libfovis/stereo_depth.cpp
++++ b/libfovis/libfovis/stereo_depth.cpp
+@@ -3,7 +3,9 @@
+ #include <cstdio>
+ #include <iostream>
+ 
++#ifdef FOVIS_USE_SSE
+ #include <emmintrin.h>
++#endif
+ 
+ #include "visual_odometry.hpp"
+ #include "tictoc.hpp"

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+	<name>dvo_core</name>
+	<version>1.0.0</version>
+	<description>dvo_core</description>
+
+	<maintainer email="christiankerl@christiankerl.com">Christian Kerl</maintainer>
+	<license>GNU v3</license>
+	<url type="repository">https://github.com/tum-vision/dvo</url>
+
+	<buildtool_depend>catkin</buildtool_depend>
+	<build_depend>eigen</build_depend>
+	<build_depend>boost</build_depend>
+	<build_depend>tbb</build_depend>
+
+	<export>
+		<cpp cflags="`rosboost-cfg --cflags` -I${prefix}/include"
+        lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -ldvo_core"/>
+	</export>
+</package>

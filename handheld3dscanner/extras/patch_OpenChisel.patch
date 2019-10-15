@@ -1,0 +1,12 @@
+diff --git a/open_chisel/include/open_chisel/threading/Threading.h b/open_chisel/include/open_chisel/threading/Threading.h
+index e250f38..ac69077 100644
+--- a/open_chisel/include/open_chisel/threading/Threading.h
++++ b/open_chisel/include/open_chisel/threading/Threading.h
+@@ -26,6 +26,7 @@
+ #include <cstddef>
+ #include <thread>
+ #include <algorithm>
++#include <vector>
+ 
+ namespace chisel
+ {

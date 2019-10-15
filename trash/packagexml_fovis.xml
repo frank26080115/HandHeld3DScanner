@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>fovis</name>
+  <version>1.1.0</version>
+  <description>fovis</description>
+
+  <maintainer email="ashuang@gmail.com">Albert Huang</maintainer>
+  <maintainer email="abachrach@gmail.com">Abraham Bachrach</maintainer>
+  <maintainer email="dimatura@gmail.com">Daniel Maturana</maintainer>
+
+  <license>Copyleft</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+  <export>
+    <!-- Specify that this is not really a Catkin package-->
+    <build_type>cmake</build_type>
+  </export>
+</package>
+

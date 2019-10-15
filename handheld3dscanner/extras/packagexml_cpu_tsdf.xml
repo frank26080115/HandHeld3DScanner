@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>cpu_tsdf</name>
+  <version>0.0.1</version>
+  <description>cpu_tsdf</description>
+
+  <maintainer email="sdavidmiller@gmail.com">Stephen Miller</maintainer>
+
+  <license>Copyleft</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+  <export>
+    <!-- Specify that this is not really a Catkin package-->
+    <build_type>cmake</build_type>
+  </export>
+</package>
+

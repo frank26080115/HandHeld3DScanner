@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>cvsba</name>
+  <version>1.0.0</version>
+  <description>cvsba</description>
+
+  <maintainer email="dizeng@dizeng.com">Di Zeng</maintainer>
+  <license>GNU v2</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+  <export>
+    <!-- Specify that this is not really a Catkin package-->
+    <build_type>cmake</build_type>
+  </export>
+</package>
+
