@@ -1,4 +1,6 @@
 */
+!extras/
+!extras/*
 ./**/
 ./**/*
 *.done
