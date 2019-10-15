@@ -119,9 +119,10 @@ until [ $n -ge 10 ]
 do
 	catkin_failed=0
 	echo -e "\e[32m calling catkin_make_isolated on $(date) \e[0m"
+	sudo ldconfig
 	if sudo ./src/catkin/bin/catkin_make_isolated --install                                                \
-	                                              $path_opencv_override                                    \
-	                                              $extra_options                                           \
+                                                  $path_opencv_override                                    \
+                                                  $extra_options                                           \
                                                   -DCATKIN_ENABLE_TESTING=False                            \
                                                   -DCMAKE_BUILD_TYPE=Release                               \
                                                   --install-space /opt/ros/kinetic                         \
@@ -149,7 +150,7 @@ done
 [ $catkin_failed -ne 0 ] && exit 1
 
 # assumed rtabmap is installed in the kinetic directory, we symlink it to our local bin
-sudo ln -s $(which rtabmap) /usr/local/bin/rtabmap
+sudo ln -s $(which rtabmap) /usr/local/bin/rtabmap && true
 
 cd ${BASEDIR}
 touch ${BASEDIR}/build_ros_rtabmap.done
