@@ -10,6 +10,7 @@ if [ $check -ge 1023 ] ; then
 	exit 0
 fi
 
+echo -e "\e[32m adding swap space \e[0m"
 # this search and replace will overwrite whatever swap memory value it was before
 # it is assumed that we are overwriting the default, which is usually only 100
 sudo sed -i 's/CONF_SWAPSIZE=[0-9]\+$/CONF_SWAPSIZE=2048/g' /etc/dphys-swapfile
