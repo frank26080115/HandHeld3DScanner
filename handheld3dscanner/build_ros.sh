@@ -192,10 +192,10 @@ patch_qt_gui_cpp_sip=1
 # https://aur.archlinux.org/packages/ros-melodic-qt-gui-cpp/
 # the makefile we have to match doesn't exist yet, but if it does, it means the previous build has failed, so patch it now
 if [ $patch_qt_gui_cpp_sip -ne 0 ] && [ -f ${ros_catkin_ws}/build_isolated/qt_gui_cpp/sip/qt_gui_cpp_sip/Makefile ]; then
-	# this patch can only be applied after calling cmake on qt_gui_cpp, so we let the build fail at least one time before attempting again
+	# this patch can only be applied after calling cmake on qt_gui_cpp, if it happens here it means the script has paused and restarted
 	# https://aur.archlinux.org/packages/ros-melodic-qt-gui-cpp/
-	#echo "applying patch to patch_qt_gui_cpp_sip's makefile"
-	#sudo sed -i -e 's/\-l\-lpthread//g' ${ros_catkin_ws}/build_isolated/qt_gui_cpp/sip/qt_gui_cpp_sip/Makefile
+	echo "applying patch to patch_qt_gui_cpp_sip's makefile"
+	sudo sed -i -e 's/\-l\-lpthread//g' ${ros_catkin_ws}/build_isolated/qt_gui_cpp/sip/qt_gui_cpp_sip/Makefile
 fi
 
 # I've noticed some failures in catkin_make_isolated that might suggest we need to watch out for permission issues
