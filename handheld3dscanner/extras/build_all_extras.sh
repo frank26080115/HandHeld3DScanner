@@ -73,14 +73,6 @@ sudo rm -rf ${extras_catkin_ws}/src/VINS-Mono/ar_demo
 [ -d ${extras_catkin_ws}/src/VINS-Fusion/camera_models/include ] && sudo cp -rf ${extras_catkin_ws}/src/VINS-Fusion/camera_models/include/* /opt/ros/kinetic/include
 [ -d ${extras_catkin_ws}/src/VINS-Mono/camera_model/include ] && sudo cp -rf ${extras_catkin_ws}/src/VINS-Mono/camera_model/include/* /opt/ros/kinetic/include
 
-#if [ -d ${extras_catkin_ws}/src/dvo/dvo_core ] ; then
-#	[ -f ${BASEDIR}/packagexml_dvo_core.xml ] && cp ${BASEDIR}/packagexml_dvo_core.xml ${extras_catkin_ws}/src/dvo/dvo_core/
-#	sudo rm -f ${extras_catkin_ws}/src/dvo/dvo_core/package.xml && true
-#	mv ${extras_catkin_ws}/src/dvo/dvo_core/packagexml_dvo_core.xml ${extras_catkin_ws}/src/dvo/dvo_core/package.xml
-#	sudo rm -rf ${extras_catkin_ws}/src/dvo/dvo_ros
-#	sudo rm -rf ${extras_catkin_ws}/src/dvo/dvo_benchmark
-#	sudo rm -rf ${extras_catkin_ws}/src/dvo/sophus
-#fi
 
 cd ${extras_catkin_ws}
 #rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:buster 2>&1 | tee rosdep_log.txt

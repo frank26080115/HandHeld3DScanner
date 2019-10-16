@@ -66,6 +66,7 @@ then
 	# this step above would've deleted the cached built artifacts
 	cd ${BASEDIR}
 	./build_ros_rtabmap.sh "-DWITH_G2O=OFF"
+	# GTSAM and ORB2_SLAM both already use G2O, turning it off here will actually avoid a conflict
 else
 	echo "You said NO"
 fi

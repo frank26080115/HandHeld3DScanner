@@ -102,10 +102,12 @@ if [ -d ${rtabmap_catkin_ws}/devel_isolated ] ; then
 fi
 
 if [ -f ${install_dir}/share/cpu_tsdf/CPUTSDFConfig.cmake ] ; then
+	# rabmap's cmake has trouble finding CPUTSDF so an environment variable must be set before building rtabmap
 	export CPUTSDF_DIR=${install_dir}/share/cpu_tsdf
 fi
 
 if [ -f ~/extras_catkin_ws/src/ORB_SLAM2/lib/libORB_SLAM2.so ] ; then
+	# ORB_SLAM2 has no installation, so an environment variable must be set before building rtabmap
 	export ORB_SLAM2_ROOT_DIR=$(readlink --canonicalize ~/extras_catkin_ws/src/ORB_SLAM2)
 fi
 

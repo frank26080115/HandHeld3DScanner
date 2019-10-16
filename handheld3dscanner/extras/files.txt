@@ -1,0 +1,16 @@
+to explain what these files do:
+
+Some of the packages to be installed are plain cmake projects, while some other packages are ROS packages that can be built by catkin.
+
+By creating some fake package.xml files, we can tell catkin to build the packages, all in one step.
+
+Some of them cannot be handled this way though.
+
+=========================================================
+
+some of the problems encountered and how to resolve them:
+
+http://official-rtab-map-forum.67519.x6.nabble.com/How-to-use-ORB-SLAM2-library-in-rtabmap-td4230.html
+https://github.com/ethz-asl/orb_slam_2_ros/issues/15
+https://github.com/introlab/rtabmap/issues/287
+https://github.com/stevenlovegrove/Pangolin/issues/323  -->  https://github.com/stevenlovegrove/Pangolin/commit/d9daba62dfa3f6c786699723621b5ca4566206dd
