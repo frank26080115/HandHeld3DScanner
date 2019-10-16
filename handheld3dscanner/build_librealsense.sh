@@ -13,8 +13,10 @@ if [ ! -f ${BASEDIR}/${gitname}/build/Makefile ]; then
 
 #./aptget_install_these.sh
 # we need a more minimal install first
+echo -e "\e[32m getting some packages required for librealsense \e[0m"
 sudo apt-get install -y build-essential cmake make git pkg-config libusb-1.0-0 libusb-1.0-0-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev xorg-dev libgtk-3-dev qtbase5-dev python2.7-dev python3-dev
 
+echo -e "\e[32m getting librealsense from GitHub \e[0m"
 if [ -d ./${gitname} ]; then
 	cd ${gitname}
 	git reset --hard HEAD
@@ -28,8 +30,7 @@ git apply ${BASEDIR}/patch_${pkgname}_${gittag}.patch
 
 
 if [ -f /etc/udev/rules.d/99-realsense-libusb.rules ]; then
-	echo -e "\e[32m"
-	echo "The udev rules file have already been copied."
+	echo -e "\e[32m The udev rules file have already been copied."
 	while read -r -t 0; do read -r; done
 	read -p "Run setup_udev_rules again? (y/n) " -n 1 -r
 	echo    # move to a new line
@@ -48,6 +49,7 @@ fi
 
 mkdir -p build && cd build
 sudo rm -rf ./*
+echo -e "\e[32m calling cmake for librealsense \e[0m"
 cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=true -DBUILD_PYTHON_BINDINGS=true -DFORCE_LIBUVC=true .. 2>&1 | tee cmake_outputlog.txt
 [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
 restarted=0
@@ -62,13 +64,13 @@ fi
 n=0
 until [ $n -ge 10 ]
 do
-	echo "make attempt on $(date)" | tee -a make_outputlog.txt
+	echo -e "\e[32m make attempt on $(date) \e[0m" | tee -a make_outputlog.txt
 	make -j4 2>&1 | tee -a make_outputlog.txt
 	if [ ${PIPESTATUS[0]} -eq 0 ]; then
 		break
 	else
 		if [ $restarted -eq 0 ]; then
-			echo "removing possibly corrupted object files"
+			echo -e "\e[33m removing possibly corrupted object files \e[0m"
 			find . -type f -size 0 -name *.cpp.o
 			find . -type f -size 0 -name *.c.o
 		fi

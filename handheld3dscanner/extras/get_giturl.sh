@@ -71,7 +71,7 @@ if [ -z "$has_packagexml" ] || [ ! -z "$has_fakepackagexml" ] ; then
 	else
 		has_manifestxml=$(sudo find ./ -maxdepth 2 -name 'manifest.xml' | grep 'manifest.xml') && true
 		if [ -z "$has_manifestxml" ] ; then
-			echo -e "\e[31m ${gitname} missing package.xml and manifest.xml without a patch to fix it. It will be skipped in the catkin build! \e[0m"
+			echo -e "\e[33m ${gitname} missing package.xml and manifest.xml without a patch to fix it. It will be skipped in the catkin build! \e[0m"
 		else
 			echo -e "\e[33m ${gitname} missing package.xml but has manifest.xml files \e[0m"
 		fi

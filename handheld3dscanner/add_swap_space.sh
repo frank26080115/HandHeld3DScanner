@@ -6,7 +6,7 @@
 
 check=$(free -m | grep 'Swap' | awk '{print $2}')
 if [ $check -ge 1023 ] ; then
-	echo "swap space already $check, skipping"
+	echo -e "\e[32m swap space already $check, skipping \e[0m"
 	exit 0
 fi
 

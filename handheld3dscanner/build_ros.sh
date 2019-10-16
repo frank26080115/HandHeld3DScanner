@@ -10,10 +10,18 @@ if [ ! -d ${ros_catkin_ws}/src ]; then
 
 	# all instructions from http://wiki.ros.org/ROSberryPi/Installing%20ROS%20Kinetic%20on%20the%20Raspberry%20Pi
 
+	echo -e "\e[32m setting up keys to securely obtain ROS packages \e[0m"
+
 	sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 	sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+
+	echo -e "\e[32m updating apt cache and upgrading all packages \e[0m"
 	sudo apt-get update && sudo apt-get upgrade -y
+
+	echo -e "\e[32m installing the first few ROS tools \e[0m"
 	sudo apt-get install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall
+
+	echo -e "\e[32m initializing rosdep and updating it \e[0m"
 	sudo rosdep init || true
 	rosdep update || true
 
@@ -26,13 +34,14 @@ if [ ! -d ${ros_catkin_ws}/src ]; then
 		skip_collada_urdf_str='--exclude collada_parser collada_urdf'
 	fi
 
+	echo -e "\e[32m running rosinstall_generator and initializing workspace\e[0m"
 	rosinstall_generator desktop geometry2 roscpp diagnostic_updater rtabmap_ros random_numbers --rosdistro kinetic --deps --wet-only ${skip_collada_urdf_str} --tar > kinetic-desktop-wet.rosinstall
 	wstool init src kinetic-desktop-wet.rosinstall
 	# use
 	# wstool update -j4 -t src
 	# if the update is interrupted
 else
-	echo "the src directory in the workspace already exists, skipping wstool init, attempting wstool update instead"
+	echo -e "\e[33m the src directory in the workspace already exists, skipping wstool init, attempting wstool update instead \e[0m"
 	cd ${ros_catkin_ws}
 	wstool update -j4 -t src
 fi
@@ -42,7 +51,7 @@ if [ ! -f ${ros_catkin_ws}/rosdep.done ]; then
 	install_assimp=0
 	if [ $install_assimp -ne 0 ]; then
 		# warning: this bit of script code has not been tested
-		echo "preemptively installing assimp so that the collada_urdf package successfully builds"
+		echo -e "\e[32m preemptively installing assimp so that the collada_urdf package successfully builds \e[0m"
 		mkdir -p ${ros_catkin_ws}/external_src cd ${ros_catkin_ws}/external_src
 		wget http://sourceforge.net/projects/assimp/files/assimp-3.1/assimp-3.1.1_no_test_models.zip/download -O assimp-3.1.1_no_test_models.zip
 		unzip assimp-3.1.1_no_test_models.zip
@@ -54,6 +63,8 @@ if [ ! -f ${ros_catkin_ws}/rosdep.done ]; then
 	fi
 
 	cd ${ros_catkin_ws}
+
+	echo -e "\e[32m installing a lot of required packages \e[0m"
 
 	sudo apt-get remove -y libvtk7-dev libvtk7-qt-dev
 	#rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:buster
@@ -85,6 +96,7 @@ if [ ! -f ${ros_catkin_ws}/rosdep.done ]; then
 	sudo -H apt-get install -y uuid-dev hddtemp
 	sudo -H apt-get install -y libboost-all-dev
 
+	echo -e "\e[32m getting package \"ddynamic_reconfigure\" \e[0m"
 	cd ${ros_catkin_ws}/src
 	if [ ! -d ${ros_catkin_ws}/src/ddynamic_reconfigure ]; then
 		git clone https://github.com/pal-robotics/ddynamic_reconfigure.git
@@ -99,7 +111,7 @@ if [ ! -f ${ros_catkin_ws}/rosdep.done ]; then
 
 	touch rosdep.done
 
-	echo "rosdep finished, files available for patching"
+	echo -e "\e[32m rosdep finished, files available for patching \e[0m"
 
 fi
 
@@ -111,7 +123,7 @@ cd ${ros_catkin_ws}
 
 patch_opencv3_cv2cpp=1
 if [ $patch_opencv3_cv2cpp -ne 0 ]; then
-	echo "applying patch to opencv3's cv2.cpp"
+	echo -e "\e[32m applying patch to opencv3's cv2.cpp \e[0m"
 	[ ! -f ${BASEDIR}/patchros_opencv3_cv2cpp.patch ] && echo -e "\e[31m patch file missing \e[0m" && exit 1
 	[ ! -f ${BASEDIR}/patchros_opencv3_cv2cpp.patch.done ] && patch -f ${ros_catkin_ws}/src/opencv3/modules/python/src2/cv2.cpp < ${BASEDIR}/patchros_opencv3_cv2cpp.patch || true
 	# https://github.com/opencv/opencv/issues/14856#issuecomment-504416696
@@ -121,7 +133,7 @@ fi
 
 patch_opencv3_cmakeliststxt=1
 if [ $patch_opencv3_cmakeliststxt -ne 0 ]; then
-	echo "applying patch to opencv3's cv2.cpp"
+	echo -e "\e[32m applying patch to opencv3's cv2.cpp \e[0m"
 	[ ! -f ${BASEDIR}/patchros_opencv3_cmakeliststxt.patch ] && echo -e "\e[31m patch file missing \e[0m" && exit 1
 	[ ! -f ${BASEDIR}/patchros_opencv3_cmakeliststxt.patch.done ] && patch -f ${ros_catkin_ws}/src/opencv3/CMakeLists.txt < ${BASEDIR}/patchros_opencv3_cmakeliststxt.patch || true
 	# this patch enables non-free modules like SIFT and SURF, as well as disables problematic modules
@@ -131,7 +143,7 @@ fi
 
 patch_geometry2_buffercorecpp=1
 if [ $patch_geometry2_buffercorecpp -ne 0 ]; then
-	echo "applying patch to geometry2's buffer_core.cpp"
+	echo -e "\e[32m applying patch to geometry2's buffer_core.cpp \e[0m"
 	[ ! -f ${BASEDIR}/patchros_geometry2_buffercorecpp.patch ] && echo -e "\e[31m patch file missing \e[0m" && exit 1
 	[ ! -f ${BASEDIR}/patchros_geometry2_buffercorecpp.patch.done ] && patch -f ${ros_catkin_ws}/src/geometry2/tf2/src/buffer_core.cpp < ${BASEDIR}/patchros_geometry2_buffercorecpp.patch || true
 	# https://github.com/ros/console_bridge/issues/56 and https://github.com/ros/ros-overlay/issues/509
@@ -156,8 +168,9 @@ fi
 install_extras=1
 if [ $install_extras -ne 0 ]; then
 	# these optional packages are linked to by OpenCV, enabling more features
+	echo -e "\e[32m installing more packages from apt-get \e[0m"
 	sudo apt-get install -y libeigen3-dev
-	sudo apt-get install -y f2c libf2c2-dev libflann-dev libblas-dev libopenblas-dev liblapack-dev liblapacke-dev libtbb2 libatlas-base-dev
+	sudo apt-get install -y f2c libf2c2-dev libflann-dev libblas-dev libopenblas-dev liblapack-dev liblapacke-dev libtbb2 libtbb-dev libatlas-base-dev
 	sudo apt-get install -y libxvidcore-dev libx264-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
 	sudo apt-get install -y libdc1394-22-dev libxine2-dev libv4l-dev libavresample-dev
 	sudo apt-get install -y libgoogle-glog-dev libceres-dev libglew-dev
@@ -167,6 +180,7 @@ fi
 
 install_libpcl_apt=1
 if [ $install_libpcl_apt -ne 0 ]; then
+	echo -e "\e[32m ensuring PCL and VTK packages are correct \e[0m"
 	sudo apt-get remove -y libvtk6-dev libvtk6-qt-dev
 	sudo apt-get install -y libvtk7-dev libvtk7-qt-dev
 	sudo apt-get install -y libpcl-dev
@@ -180,7 +194,7 @@ patch_qt_gui_cpp_sip=1
 if [ $patch_qt_gui_cpp_sip -ne 0 ] && [ -f ${ros_catkin_ws}/build_isolated/qt_gui_cpp/sip/qt_gui_cpp_sip/Makefile ]; then
 	# this patch can only be applied after calling cmake on qt_gui_cpp, so we let the build fail at least one time before attempting again
 	# https://aur.archlinux.org/packages/ros-melodic-qt-gui-cpp/
-	echo "applying patch to patch_qt_gui_cpp_sip's makefile"
+	#echo "applying patch to patch_qt_gui_cpp_sip's makefile"
 	#sudo sed -i -e 's/\-l\-lpthread//g' ${ros_catkin_ws}/build_isolated/qt_gui_cpp/sip/qt_gui_cpp_sip/Makefile
 fi
 
@@ -201,7 +215,7 @@ if [ -d ${ros_catkin_ws}/devel_isolated ] ; then
 	sudo chmod -R ugo+rw ${ros_catkin_ws}/devel_isolated
 fi
 
-sudo rm make_outputlog.txt && true
+sudo rm make_outputlog.txt || true
 # the build output tends to be extra long and with multiple build threads, errors might be hard to find on the terminal screen
 # we tee everything to a log file to solve this
 exec > >(tee -i make_outputlog.txt)
@@ -210,7 +224,7 @@ n=0
 until [ $n -ge 10 ]
 do
 	catkin_failed=0
-	echo "calling catkin_make_isolated on $(date)"
+	echo -e "\e[32m calling catkin_make_isolated on $(date) \e[0m"
 	if sudo ./src/catkin/bin/catkin_make_isolated --install                                                \
                                                   -DCATKIN_ENABLE_TESTING=False                            \
                                                   -DCMAKE_BUILD_TYPE=Release                               \
@@ -220,17 +234,16 @@ do
                                                   -DBOOST_INCLUDEDIR=${BASEDIR}/boost_1_58_0               \
                                                   --install-space /opt/ros/kinetic                         \
                                                   -j4 2>&1 ; then
-		echo "catkin_make_isolated seems to have finished successfully"
+		echo -e "\e[32m catkin_make_isolated seems to have finished successfully \e[0m"
 	else
-		echo "catkin_make_isolated seems to have finished and has a failure"
+		echo -e "\e[31m catkin_make_isolated seems to have finished and has a failure \e[0m"
 		catkin_failed=1
 	fi
 	if [ $catkin_failed -ne 0 ] ; then
-		echo "catkin_make_isolated seems to have failed"
 		if [ $patch_qt_gui_cpp_sip -ne 0 ] && [ -f ${ros_catkin_ws}/build_isolated/qt_gui_cpp/sip/qt_gui_cpp_sip/Makefile ] ; then
 			# this patch can only be applied after calling cmake on qt_gui_cpp, so we let the build fail at least one time before attempting again
 			# https://aur.archlinux.org/packages/ros-melodic-qt-gui-cpp/
-			echo "applying patch to patch_qt_gui_cpp_sip's makefile"
+			echo -e "\e[33m applying patch to patch_qt_gui_cpp_sip's makefile \e[0m"
 			sudo sed -i -e 's/\-l\-lpthread//g' ${ros_catkin_ws}/build_isolated/qt_gui_cpp/sip/qt_gui_cpp_sip/Makefile
 		else
 			echo -e "\e[31m unable to apply patch for qt_gui_cpp_sip/Makefile \e[0m" && exit 1
@@ -242,7 +255,7 @@ do
 		sudo chmod -R ugo+rw ${ros_catkin_ws}/build_isolated
 		sudo chmod -R ugo+rw ${ros_catkin_ws}/devel_isolated
 	else
-		echo "catkin_make_isolated seems to have succeeded"
+		echo -e "\e[32m catkin_make_isolated seems to have succeeded \e[0m"
 		break
 	fi
 	n=$[$n+1]

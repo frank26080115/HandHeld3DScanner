@@ -112,7 +112,7 @@ if [ -f ~/extras_catkin_ws/src/ORB_SLAM2/lib/libORB_SLAM2.so ] ; then
 fi
 
 cd ${rtabmap_catkin_ws}
-sudo rm make_outputlog.txt && true
+sudo rm make_outputlog.txt || true
 
 exec > >(tee -i make_outputlog.txt)
 
@@ -152,7 +152,7 @@ done
 [ $catkin_failed -ne 0 ] && exit 1
 
 # assumed rtabmap is installed in the kinetic directory, we symlink it to our local bin
-sudo ln -s $(which rtabmap) /usr/local/bin/rtabmap && true
+sudo ln -s $(which rtabmap) /usr/local/bin/rtabmap || true
 
 cd ${BASEDIR}
 touch ${BASEDIR}/build_ros_rtabmap.done

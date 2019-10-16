@@ -19,7 +19,7 @@ if [ ! -f ${tarname}.tar.bz2 ]; then
 fi
 
 if ! echo "fdfc204fc33ec79c99b9a74944c3e54bd78be4f7f15e260c0e2700a36dc7d3e5  ${tarname}.tar.bz2" | sha256sum --check ; then
-	echo "download for boost-1.58.0 failed, please check this script (build_libboost158.sh) and use an alternative URL if needed" >&2
+	echo -e "\e[31m download for boost-1.58.0 failed, please check this script (build_libboost158.sh) and use an alternative URL if needed \e[0m" >&2
 	exit 1
 fi
 

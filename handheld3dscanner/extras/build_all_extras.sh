@@ -10,7 +10,8 @@ source /opt/ros/kinetic/setup.bash
 
 #####################################################
 
-sudo apt-get install -y libtbb-dev
+#sudo apt-get install -y libtbb-dev
+# should already have been installed
 
 #./get_giturl.sh https://github.com/ros-planning/random_numbers 0.3.2
 # this was a dependancy, I've moved this to the main ROS install instead
@@ -117,7 +118,7 @@ if [ -d ${extras_catkin_ws}/devel_isolated ] ; then
 	sudo chmod -R ugo+rw ${extras_catkin_ws}/devel_isolated
 fi
 
-sudo rm make_outputlog.txt && true
+sudo rm make_outputlog.txt || true
 # the build output tends to be extra long and with multiple build threads, errors might be hard to find on the terminal screen
 # we tee everything to a log file to solve this
 exec > >(tee -i make_outputlog.txt)
@@ -188,7 +189,7 @@ cd ${extras_catkin_ws}/src/ORB2_SLAM
 echo -e "\e[32m ORB2_SLAM and Pangolin should be available for rtabmap now \e[0m"
 
 # delete the cached build from before
-sudo rm -rf ${rtabmap_catkin_ws}/build_isolated/rtabmap && true
-sudo rm -rf ${rtabmap_catkin_ws}/build_isolated/rtabmap_ros && true
-sudo rm -rf ${rtabmap_catkin_ws}/devel_isolated/rtabmap && true
-sudo rm -rf ${rtabmap_catkin_ws}/devel_isolated/rtabmap_ros && true
+sudo rm -rf ${rtabmap_catkin_ws}/build_isolated/rtabmap || true
+sudo rm -rf ${rtabmap_catkin_ws}/build_isolated/rtabmap_ros || true
+sudo rm -rf ${rtabmap_catkin_ws}/devel_isolated/rtabmap || true
+sudo rm -rf ${rtabmap_catkin_ws}/devel_isolated/rtabmap_ros || true
