@@ -48,9 +48,11 @@ sudo apt-get install -y libtbb-dev
 # it turns out, dvo_core requires x86
 
 #./get_giturl.sh https://github.com/ethz-asl/okvis 1dce9129f22dd4d21d944788cd9da3a4341586aa
-# got a build error I don't know how to resolve
+# does not build on ARM when OpenCV3 is used
 
-./get_giturl.sh https://github.com/KumarRobotics/msckf_vio
+#./get_giturl.sh https://github.com/KumarRobotics/msckf_vio
+# MSCKF_VIO is currently not compatible without major changes, it's not enabled by default, and it's not useful for our use case
+
 ./get_giturl.sh https://github.com/stevenlovegrove/Pangolin v0.5
 ./get_giturl.sh https://github.com/raulmur/ORB_SLAM2
 
