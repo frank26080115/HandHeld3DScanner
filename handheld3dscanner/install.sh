@@ -38,6 +38,7 @@ sudo chmod +x *.sh
 
 echo -e "\e[32m librealsense2, ROS Kinetic, and RTAB-Map have been installed \e[0m"
 
+if [ ! -f kernel_patch.done ] ; then
 echo -e "\e[32m If you want to, we can patch the UVC kernel module so the Intel RealSense camera works as a webcam. This will take another hour and several gigabytes of storage. This step will require some user interaction as well."
 while read -r -t 0; do read -r; done
 read -p "Perform the patch? (y/n) " -n 1 -r
@@ -49,10 +50,12 @@ else
 	echo "You said NO"
 fi
 echo -e "\e[0m"
+fi
 
 ./configure_lxde_panel.sh
 ./configure_rtabmap_ini.sh
 
+if [ ! -f extras.done ] ; then
 if [ -d extras ] ; then
 echo -e "\e[32m If you want to, we can add some extra features to RTAB-Map. This takes some extra time and disk space."
 while read -r -t 0; do read -r; done
@@ -66,11 +69,13 @@ then
 	# this step above would've deleted the cached built artifacts
 	cd ${BASEDIR}
 	./build_ros_rtabmap.sh "-DWITH_G2O=OFF"
-	# GTSAM and ORB2_SLAM both already use G2O, turning it off here will actually avoid a conflict
+	# ORB_SLAM2 already use G2O, turning it off here will actually avoid a conflict
+	touch extras.done
 else
 	echo "You said NO"
 fi
 echo -e "\e[0m"
+fi
 fi
 
 echo -e "\e[32m All Installation Done \e[0m"

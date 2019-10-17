@@ -10,6 +10,8 @@ source /opt/ros/kinetic/setup.bash
 
 #####################################################
 
+if [ ! -f ${BASEDIR}/delete.done ] ; then
+
 #sudo apt-get install -y libtbb-dev
 # should already have been installed
 
@@ -76,6 +78,8 @@ sudo rm -rf ${extras_catkin_ws}/src/VINS-Mono/ar_demo
 [ -d ${extras_catkin_ws}/src/VINS-Fusion/camera_models/include ] && sudo cp -rf ${extras_catkin_ws}/src/VINS-Fusion/camera_models/include/* /opt/ros/kinetic/include
 [ -d ${extras_catkin_ws}/src/VINS-Mono/camera_model/include ] && sudo cp -rf ${extras_catkin_ws}/src/VINS-Mono/camera_model/include/* /opt/ros/kinetic/include
 
+# if [ ! -f ${BASEDIR}/delete.done ] ; then
+fi
 
 cd ${extras_catkin_ws}
 #rosdep install -y --from-paths src --ignore-src --rosdistro kinetic -r --os=debian:buster 2>&1 | tee rosdep_log.txt
@@ -117,6 +121,8 @@ if [ -d ${extras_catkin_ws}/devel_isolated ] ; then
 	sudo chown -R $(id -u):$(id -g) ${extras_catkin_ws}/devel_isolated
 	sudo chmod -R ugo+rw ${extras_catkin_ws}/devel_isolated
 fi
+
+if [ ! -f ${BASEDIR}/catkin.done ] ; then
 
 sudo rm make_outputlog.txt || true
 # the build output tends to be extra long and with multiple build threads, errors might be hard to find on the terminal screen
@@ -166,30 +172,51 @@ done
 
 [ $catkin_failed -ne 0 ] && exit 1
 
+else
+	echo -e "\e[32m All extra catkin compatible packages already built and installed \e[0m"
+fi
+touch ${BASEDIR}/catkin.done
+
 # there's a chance that cvsba didn't get installed right
 # with the catkin build, the installation seems proper, but I'm keeping the code here
-[ ! -d /usr/local/lib/cmake/cvsba ] && sudo mkdir -pf /usr/local/lib/cmake/cvsba
 if [ -f /usr/local/lib/cmake/Findcvsba.cmake ] ; then
+	[ ! -d /usr/local/lib/cmake/cvsba ] && sudo mkdir -p /usr/local/lib/cmake/cvsba
 	sudo cp -f /usr/local/lib/cmake/Findcvsba.cmake /usr/local/lib/cmake/cvsba/
 	sudo mv -f /usr/local/lib/cmake/cvsba/Findcvsba.cmake /usr/local/lib/cmake/cvsba/cvsbaConfig.cmake
 	echo -e "\e[33m made copy to /usr/local/lib/cmake/cvsba/cvsbaConfig.cmake \e[0m"
 fi
 
-echo -e "\e[32m starting build of Pangolin \e[0m"
-cd ${extras_catkin_ws}/src/Pangolin
-mkdir -p build && cd build
-sudo rm -rf ./*
-echo -e "\e[32m calling cmake for Pangolin \e[0m"
-cmake ..
-echo -e "\e[32m calling make for Pangolin \e[0m"
-make -j4 && sudo make install
-echo -e "\e[32m starting build of ORB2_SLAM \e[0m"
-cd ${extras_catkin_ws}/src/ORB2_SLAM
-./build.sh
-echo -e "\e[32m ORB2_SLAM and Pangolin should be available for rtabmap now \e[0m"
+[ -d ${install_dir}/include/libfovis/libfovis ] && sudo cp -rf ${install_dir}/include/libfovis/libfovis ${install_dir}/include/
 
-# delete the cached build from before
-sudo rm -rf ${rtabmap_catkin_ws}/build_isolated/rtabmap || true
-sudo rm -rf ${rtabmap_catkin_ws}/build_isolated/rtabmap_ros || true
-sudo rm -rf ${rtabmap_catkin_ws}/devel_isolated/rtabmap || true
-sudo rm -rf ${rtabmap_catkin_ws}/devel_isolated/rtabmap_ros || true
+if [ ! -f ${BASEDIR}/Pangolin.done ] ; then
+	echo -e "\e[32m starting build of Pangolin \e[0m"
+	cd ${extras_catkin_ws}/src/Pangolin
+	mkdir -p build && cd build
+	sudo rm -rf ./*
+	echo -e "\e[32m calling cmake for Pangolin \e[0m"
+	cmake ..
+	echo -e "\e[32m calling make for Pangolin \e[0m"
+	make -j4 && sudo make install
+	touch ${BASEDIR}/Pangolin.done
+else
+	echo -e "\e[32m Pangolin already built and installed \e[0m"
+fi
+
+if [ ! -f ${BASEDIR}/ORB_SLAM2.done ] ; then
+	echo -e "\e[32m starting build of ORB_SLAM2 \e[0m"
+	cd ${extras_catkin_ws}/src/ORB_SLAM2
+	./build.sh
+	echo -e "\e[32m ORB_SLAM2 and Pangolin should be available for rtabmap now \e[0m"
+	touch ${BASEDIR}/ORB_SLAM2.done
+else
+	echo -e "\e[32m ORB_SLAM2 already built and installed \e[0m"
+fi
+
+if [ ! -f ${BASEDIR}/delete.done ] ; then
+	# delete the cached build from before
+	sudo rm -rf ${rtabmap_catkin_ws}/build_isolated/rtabmap || true
+	sudo rm -rf ${rtabmap_catkin_ws}/build_isolated/rtabmap_ros || true
+	sudo rm -rf ${rtabmap_catkin_ws}/devel_isolated/rtabmap || true
+	sudo rm -rf ${rtabmap_catkin_ws}/devel_isolated/rtabmap_ros || true
+	touch ${BASEDIR}/delete.done
+fi

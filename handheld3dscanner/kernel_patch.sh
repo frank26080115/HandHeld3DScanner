@@ -113,3 +113,5 @@ cheeseicon=$(ls -w 1 /usr/share/applications | grep -i cheese | grep desktop)
 cp /usr/share/applications/$cheeseicon ~/Desktop
 
 echo -e "\e[32m done, I think you should reboot \e[0m"
+
+touch ${BASEDIR}/kernel_patch.done
