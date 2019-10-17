@@ -103,11 +103,13 @@ fi
 
 if [ -f ${install_dir}/share/cpu_tsdf/CPUTSDFConfig.cmake ] ; then
 	# rabmap's cmake has trouble finding CPUTSDF so an environment variable must be set before building rtabmap
+	echo -e "\e[32m CPUTSDF seems to have been installed, setting CPUTSDF_DIR \e[0m"
 	export CPUTSDF_DIR=${install_dir}/share/cpu_tsdf
 fi
 
 if [ -f ~/extras_catkin_ws/src/ORB_SLAM2/lib/libORB_SLAM2.so ] ; then
 	# ORB_SLAM2 has no installation, so an environment variable must be set before building rtabmap
+	echo -e "\e[32m ORB_SLAM2 seems to have been installed, setting ORB_SLAM2_ROOT_DIR \e[0m"
 	export ORB_SLAM2_ROOT_DIR=$(readlink --canonicalize ~/extras_catkin_ws/src/ORB_SLAM2)
 fi
 
@@ -122,7 +124,7 @@ do
 	catkin_failed=0
 	echo -e "\e[32m calling catkin_make_isolated on $(date) \e[0m"
 	sudo ldconfig
-	if sudo ./src/catkin/bin/catkin_make_isolated --install                                                \
+	if sudo -E ./src/catkin/bin/catkin_make_isolated --install                                             \
                                                   $path_opencv_override                                    \
                                                   $extra_options                                           \
                                                   -DCATKIN_ENABLE_TESTING=False                            \
