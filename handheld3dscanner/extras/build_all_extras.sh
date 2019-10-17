@@ -206,6 +206,11 @@ if [ ! -f ${BASEDIR}/ORB_SLAM2.done ] ; then
 	echo -e "\e[32m starting build of ORB_SLAM2 \e[0m"
 	cd ${extras_catkin_ws}/src/ORB_SLAM2
 	./build.sh
+	sudo cp -f ${extras_catkin_ws}/src/ORB_SLAM2/lib/libORB_SLAM2.so ${install_dir}/lib/
+	if [ ! -f ${install_dir}/lib/libg2o.so ] ; then
+		sudo cp -f ${extras_catkin_ws}/src/ORB_SLAM2/Thirdparty/g2o/lib/libg2o.so ${install_dir}/lib/
+	fi
+	sudo cp -f ${extras_catkin_ws}/src/ORB_SLAM2/Thirdparty/DBoW2/lib/libDBoW2.so ${install_dir}/lib/
 	echo -e "\e[32m ORB_SLAM2 and Pangolin should be available for rtabmap now \e[0m"
 	touch ${BASEDIR}/ORB_SLAM2.done
 else
