@@ -50,7 +50,7 @@ fi
 mkdir -p build && cd build
 sudo rm -rf ./*
 echo -e "\e[32m calling cmake for librealsense \e[0m"
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=true -DBUILD_PYTHON_BINDINGS=true -DFORCE_LIBUVC=true .. 2>&1 | tee cmake_outputlog.txt
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=true -DBUILD_PYTHON_BINDINGS=true -DPYTHON_EXECUTABLE=$(which python3) -DFORCE_LIBUVC=true .. 2>&1 | tee cmake_outputlog.txt
 [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
 restarted=0
 
@@ -80,6 +80,10 @@ done
 [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
 
 sudo make install
+
+sudo cp -f ${BASEDIR}/${gitname}/build/wrappers/python/pyrealsense*.so /usr/local/lib/ || true
+sudo cp -f ${BASEDIR}/${gitname}/build/wrappers/python/pyrealsense*.so.* /usr/local/lib/ || true
+
 sudo ldconfig
 
 touch ${BASEDIR}/build_${pkgname}.done
