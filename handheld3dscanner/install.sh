@@ -26,6 +26,7 @@ sudo chmod +x *.sh
 
 [ ! -f ${BASEDIR}/build_librealsense.done ] && ./build_librealsense.sh
 ./install_realsenseviewer_icon.sh
+./../demos/hwreset/install_hwreset_icon.sh
 
 [ ! -f ${BASEDIR}/build_libboost158.done  ] && ./build_libboost158.sh
 # this will leave all the library files inside this directory, not installed into the system
