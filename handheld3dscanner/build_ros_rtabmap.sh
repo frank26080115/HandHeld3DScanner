@@ -21,7 +21,7 @@ else
 	cd ${rtabmap_catkin_ws}/src/realsense-ros
 	git reset --hard HEAD
 fi
-git checkout -f `git tag | sort -V | grep -P "^\d+\.\d+\.\d+" | tail -1`
+git checkout -f 2.2.9
 cd ${rtabmap_catkin_ws}/src
 
 if [ ! -d ${rtabmap_catkin_ws}/src/rtabmap_ros ]; then
@@ -77,7 +77,7 @@ if [ -f /opt/ros/kinetic/share/OpenCV-3.3.1-dev/OpenCVConfig.cmake ]; then
 fi
 
 if [[ -z "$1" ]]; then
-	extra_options='-DWITH_G2O=OFF -DWITH_GTSAM=OFF -DWITH_CVSBA=OFF'
+	extra_options='-DWITH_G2O=OFF'
 	# removing these extra features is a safe build that's known to work
 	# use the $1 arg later to add extra features
 else
@@ -114,7 +114,7 @@ if [ -f ~/extras_catkin_ws/src/ORB_SLAM2/lib/libORB_SLAM2.so ] ; then
 fi
 
 cd ${rtabmap_catkin_ws}
-sudo rm make_outputlog.txt || true
+[ -f make_outputlog.txt ] && sudo rm make_outputlog.txt || true
 
 exec > >(tee -i make_outputlog.txt)
 
