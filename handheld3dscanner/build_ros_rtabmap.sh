@@ -21,7 +21,7 @@ else
 	cd ${rtabmap_catkin_ws}/src/realsense-ros
 	git reset --hard HEAD
 fi
-git checkout -f 2.33.1
+git checkout -f 2.2.13
 cd ${rtabmap_catkin_ws}/src
 
 if [ ! -d ${rtabmap_catkin_ws}/src/rtabmap_ros ]; then
