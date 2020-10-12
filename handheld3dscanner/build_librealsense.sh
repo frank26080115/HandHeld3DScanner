@@ -4,7 +4,7 @@ BASEDIR=$(cd $(dirname "$0"); pwd)
 
 pkgname="librealsense"
 gitname="librealsense"
-gittag="v2.29.0"
+gittag="v2.33.1"
 #gittag="ff2a291" # master as of Sept-17-2019
 
 cd ${BASEDIR}
@@ -26,7 +26,7 @@ else
 fi
 git checkout -f ${gittag}
 
-git apply ${BASEDIR}/patch_${pkgname}_${gittag}.patch
+#git apply ${BASEDIR}/patch_${pkgname}_${gittag}.patch
 
 
 if [ -f /etc/udev/rules.d/99-realsense-libusb.rules ]; then
