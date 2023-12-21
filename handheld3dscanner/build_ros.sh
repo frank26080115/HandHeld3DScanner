@@ -13,7 +13,7 @@ if [ ! -d ${ros_catkin_ws}/src ]; then
 	echo -e "\e[32m setting up keys to securely obtain ROS packages \e[0m"
 
 	sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-	sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
 
 	echo -e "\e[32m updating apt cache and upgrading all packages \e[0m"
 	sudo apt-get update && sudo apt-get upgrade -y
